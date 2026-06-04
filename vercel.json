@@ -26,6 +26,5 @@
       ]
     }
   ],
-  "rewrites": [],
-  "regions": ["iad1", "gru1"]
+  "rewrites": []
 }
