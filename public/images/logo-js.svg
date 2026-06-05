@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <!-- Outer ring -->
+  <circle cx="100" cy="100" r="95" stroke="url(#gold)" stroke-width="3" fill="none"/>
+
+  <!-- Inner subtle ring -->
+  <circle cx="100" cy="100" r="82" stroke="url(#gold)" stroke-width="1" fill="none" opacity="0.4"/>
+
+  <!-- Background circle (transparent-friendly) -->
+  <circle cx="100" cy="100" r="78" fill="url(#bgGrad)" opacity="0.08"/>
+
+  <!-- J letter -->
+  <text x="38" y="128"
+    font-family="Georgia, 'Times New Roman', serif"
+    font-size="88"
+    font-weight="700"
+    fill="url(#gold)"
+    letter-spacing="-4">J</text>
+
+  <!-- S letter -->
+  <text x="96" y="128"
+    font-family="Georgia, 'Times New Roman', serif"
+    font-size="88"
+    font-weight="700"
+    fill="url(#gold)"
+    letter-spacing="-4">S</text>
+
+  <!-- Bottom tagline -->
+  <text x="100" y="165"
+    font-family="Arial, Helvetica, sans-serif"
+    font-size="11"
+    font-weight="400"
+    fill="#b8860b"
+    text-anchor="middle"
+    letter-spacing="5"
+    opacity="0.85">SOLÓRZANO</text>
+
+  <!-- Decorative lines -->
+  <line x1="28" y1="148" x2="64" y2="148" stroke="url(#gold)" stroke-width="1" opacity="0.5"/>
+  <line x1="136" y1="148" x2="172" y2="148" stroke="url(#gold)" stroke-width="1" opacity="0.5"/>
+
+  <defs>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f0c040"/>
+      <stop offset="50%" stop-color="#b8860b"/>
+      <stop offset="100%" stop-color="#e8a020"/>
+    </linearGradient>
+    <radialGradient id="bgGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#f0c040"/>
+      <stop offset="100%" stop-color="#b8860b" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+</svg>
