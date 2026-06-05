@@ -32,7 +32,7 @@ export const siteConfig = {
   email: "vjosue.3004@gmail.com",
   whatsapp: "50689547758",
   twitterHandle: "@josuesolorzano",
-  linkedinHandle: "josuesolorzano",
+  linkedinHandle: "josuesolorzanocr",
   instagramHandle: "josuesolorzano",
   youtubeHandle: "josuesolorzano",
 };
