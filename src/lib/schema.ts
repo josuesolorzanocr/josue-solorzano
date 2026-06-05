@@ -31,8 +31,8 @@ export function personSchema() {
       `https://youtube.com/@${siteConfig.youtubeHandle}`,
       // Amazon Author Central — Phase 4 DAB
       "https://www.amazon.com/author/josuesolorzano",
-      // Wikidata — Phase 4 DAB (update Q-ID once created at wikidata.org)
-      "https://www.wikidata.org/wiki/Special:Search/Josue_Solorzano",
+      // Wikidata — Phase 4 DAB
+      "https://www.wikidata.org/wiki/Q140067601",
     ],
     knowsAbout: [
       "Diseño Web Premium",
