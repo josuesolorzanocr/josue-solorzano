@@ -136,8 +136,11 @@ export async function POST(request: Request) {
               </div>
               <p style="margin-bottom: 0; color: #555;">Mientras tanto, puedes leer más sobre cómo trabajo en <a href="https://josuesolorzano.com/sobre-mi" style="color: #b8860b; text-decoration: none; font-weight: 600;">mi historia</a>.</p>
             </div>
+            <div style="padding: 12px 32px; background: #fffbeb; border-top: 1px solid #fde68a; text-align: center; font-size: 12px; color: #92400e;">
+              📬 ¿No ves este email en tu bandeja principal? Búscalo en <strong>spam o correo no deseado</strong> y márcalo como <strong>"No es spam"</strong> para recibirlo correctamente en el futuro.
+            </div>
             <div style="padding: 16px 32px; background: #f8f8ff; text-align: center; font-size: 12px; color: #8888aa;">
-              Josue Solorzano · josuesolorzano.com · Costa Rica
+              Josué Solórzano · josuesolorzano.com · Costa Rica
             </div>
           </div>
         </body>
