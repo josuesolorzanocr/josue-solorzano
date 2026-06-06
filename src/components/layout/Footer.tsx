@@ -34,7 +34,6 @@ export default function Footer({ lang = "es" }: FooterProps) {
     { label: "LinkedIn", href: `https://linkedin.com/in/${siteConfig.linkedinHandle}`, icon: "in" },
     { label: "Twitter / X", href: `https://twitter.com/${siteConfig.twitterHandle.replace("@", "")}`, icon: "𝕏" },
     { label: "Instagram", href: `https://instagram.com/${siteConfig.instagramHandle}`, icon: "IG" },
-    { label: "YouTube", href: `https://youtube.com/@${siteConfig.youtubeHandle}`, icon: "▶" },
   ];
 
   return (
