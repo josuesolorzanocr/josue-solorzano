@@ -4,6 +4,7 @@ import Stats from "@/components/sections/Stats";
 import About from "@/components/sections/About";
 import ServicesSection from "@/components/sections/ServicesSection";
 import Testimonials from "@/components/sections/Testimonials";
+import BookAuthority from "@/components/sections/BookAuthority";
 import ContactSection from "@/components/sections/ContactSection";
 import { siteConfig } from "@/lib/utils";
 import { faqSchema, professionalServiceSchema } from "@/lib/schema";
@@ -44,6 +45,7 @@ export default function HomePage() {
       <About lang="es" />
       <ServicesSection lang="es" />
       <Testimonials lang="es" />
+      <BookAuthority lang="es" />
       <ContactSection lang="es" />
     </>
   );
