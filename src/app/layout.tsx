@@ -61,6 +61,9 @@ export const metadata: Metadata = {
     canonical: siteConfig.url,
     languages: { es: siteConfig.url, en: `${siteConfig.url}/en` },
   },
+  verification: {
+    google: "xKbP5Vb3U7fDrMjQ3mUfL-7kSQxNpXaT8hXIu4r4VN0",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
