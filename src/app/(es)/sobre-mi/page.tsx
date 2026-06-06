@@ -18,7 +18,7 @@ const values = [
   { icon: "🎯", title: "Precisión", desc: "Cada detalle importa. No entrego nada que no superaría mi propio estándar." },
   { icon: "🚀", title: "Resultados reales", desc: "No vendo promesas. Entrego sistemas que funcionan y se pueden medir." },
   { icon: "🌍", title: "Visión global", desc: "Desde Costa Rica, construyo presencias digitales que compiten en cualquier mercado del mundo." },
-  { icon: "🤖", title: "A la vanguardia", desc: "Mientras otros apenas descubren la IA, yo ya la uso para posicionar a mis clientes dentro de ella." },
+  { icon: "🤖", title: "Ejecución nativa en IA", desc: "Construido para la forma en que la gente busca hoy: Google, plataformas de IA, LinkedIn, sitios web y señales de confianza funcionando juntos." },
 ];
 
 export default function SobreMiPage() {
@@ -45,11 +45,12 @@ export default function SobreMiPage() {
           </nav>
           <span className="text-[#f0c040] text-sm font-semibold uppercase tracking-widest">La historia detrás</span>
           <h1 className="text-5xl lg:text-6xl font-bold text-white mt-3 mb-6 leading-tight">
-            No vine del mundo tech.<br />
-            <span className="gradient-text">Vine a transformarlo.</span>
+            Aporto disciplina, precisión<br />
+            <span className="gradient-text">y sistemas modernos de IA</span><br />
+            a la autoridad digital.
           </h1>
           <p className="text-[#8888aa] text-xl leading-relaxed">
-            Un costarricense que pasó de las calles a la vanguardia digital — y que ahora ayuda a negocios de todo el mundo a dominar internet.
+            Especialista costarricense en autoridad digital premium — ayudando a negocios de todo el mundo a mejorar su confianza, visibilidad y conversión en Google, búsquedas con IA y toda su presencia online.
           </p>
         </div>
       </section>
@@ -85,19 +86,19 @@ export default function SobreMiPage() {
             {/* Content */}
             <div className="space-y-6 text-[#ccccdd] leading-relaxed">
               <p className="text-xl text-white font-medium">
-                Hay cosas que te forman de maneras que no esperas.
+                Vengo de Costa Rica con una formación marcada por disciplina, presión y precisión.
               </p>
               <p>
-                Durante años trabajé como policía. Un trabajo que te exige disciplina absoluta, atención al detalle y la capacidad de actuar con claridad cuando todo a tu alrededor es caos. Esas habilidades no las dejé cuando cambié de camino — las traje conmigo.
+                Antes de entrar al mundo digital, trabajé como policía — una labor que me entrenó para observar detalles, tomar decisiones bajo presión y nunca entregar trabajo incompleto. Esas habilidades no se van. Se convierten en tu estándar.
               </p>
               <p>
-                Hace pocos meses descubrí el mundo de la inteligencia artificial y los servicios digitales. Y lo que vi me dejó claro una cosa: <strong className="text-white">la mayoría de negocios en el mundo están completamente invisibles en internet.</strong> Sin presencia, sin autoridad, sin sistema para atraer clientes.
+                Hoy aplico ese mismo estándar a la autoridad digital: <strong className="text-white">sitios web premium, visibilidad en IA, estructura SEO, posicionamiento de marca y sistemas de conversión para negocios que quieren competir en mercados globales.</strong>
               </p>
               <p>
-                Decidí aprender con la misma intensidad con la que entrenaba para el trabajo más exigente que había tenido. Estudié SEO, diseño web premium, optimización para IAs, autoridad digital. Y me di cuenta de que podía construir algo que muy pocos ofrecen: <strong className="text-white">resultados de nivel mundial desde Costa Rica, para clientes en cualquier rincón del planeta.</strong>
+                No vengo del mundo tradicional de las agencias — y precisamente esa es la ventaja. Trabajo con herramientas modernas, ejecución nativa en IA y un proceso disciplinado diseñado para el mercado actual, donde ser encontrado por Google y las plataformas de IA importa tanto como tener un gran producto.
               </p>
               <p>
-                No tengo décadas de experiencia. Tengo algo mejor: ojos frescos, acceso a las herramientas más avanzadas del mundo, y la disciplina de alguien que nunca entrega trabajo a medias.
+                El resultado: un sistema de autoridad digital construido con la misma atención al detalle que me mantuvo alerta en el trabajo más exigente que he tenido.
               </p>
 
               <div className="pt-4">
@@ -136,7 +137,7 @@ export default function SobreMiPage() {
       <section className="py-16">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <blockquote className="text-2xl lg:text-3xl font-bold text-white leading-snug">
-            &ldquo;No necesitas ser el más antiguo en el mercado. Necesitas ser el más <span className="gradient-text">visible</span> — y eso es exactamente lo que construyo.&rdquo;
+            &ldquo;Antes de que las personas confíen en lo que ofreces, necesitan entender quién eres, qué representas y por qué tu <span className="gradient-text">autoridad importa</span>.&rdquo;
           </blockquote>
           <cite className="text-[#f0c040] text-sm font-semibold mt-6 block">— Josue Solorzano</cite>
         </div>
