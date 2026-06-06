@@ -17,7 +17,7 @@ export default function Footer({ lang = "es" }: FooterProps) {
         { label: "Pricing", href: "/en#pricing" },
         { label: "Blog", href: "/en/blog" },
         { label: "Books", href: "/en/books" },
-        { label: "Media Kit", href: "/media-kit" },
+        { label: "Press Kit", href: "/en/press" },
         { label: "Contact", href: "/en#contact" },
       ]
     : [

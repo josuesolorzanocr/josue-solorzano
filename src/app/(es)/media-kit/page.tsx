@@ -197,17 +197,33 @@ export default function MediaKitPage() {
               </p>
             </div>
 
-            {/* Bio en inglés */}
+            {/* Datos rápidos */}
             <div className="bg-[#111118] border border-[#1e1e2e] rounded-2xl p-8">
               <div className="flex items-center gap-3 mb-6">
                 <Globe size={20} className="text-[#f0c040]" />
-                <h2 className="text-white font-bold text-lg">Official Bio (English)</h2>
+                <h2 className="text-white font-bold text-lg">Datos Rápidos</h2>
               </div>
-              <p className="text-[#ccccdd] leading-relaxed text-sm">
-                Josué Solórzano is a digital authority specialist from Costa Rica helping experts, consultants, founders and service businesses build world-class online presence. He is the creator of the Digital Authority System — a 7-phase framework that positions brands as trusted references across Google, AI search and global markets, through premium website design, advanced SEO, AI optimization, and digital PR.
-                <br /><br />
-                With a background built on operational discipline and execution under pressure, Josué applies the same precision standard to every client project. He is the author of &quot;Define Your Authority: Awaken Your New Identity,&quot; published by Legacy Publishers and available on Amazon. He currently delivers projects for clients in the US, Europe and Latin America.
-              </p>
+              <ul className="space-y-3 text-sm text-[#ccccdd]">
+                {[
+                  { label: "Ubicación", value: "Costa Rica" },
+                  { label: "Idiomas", value: "Español · Inglés" },
+                  { label: "Mercados", value: "USA · Europa · Latinoamérica" },
+                  { label: "Sitio web", value: "josuesolorzano.com" },
+                  { label: "Libro", value: "Define Tu Autoridad (Amazon)" },
+                  { label: "Especialidad", value: "Sistemas de Autoridad Digital" },
+                ].map((fact) => (
+                  <li key={fact.label} className="flex justify-between border-b border-[#1e1e2e] pb-2">
+                    <span className="text-[#8888aa]">{fact.label}</span>
+                    <span className="font-medium">{fact.value}</span>
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-6 p-4 bg-[#b8860b1a] border border-[#b8860b33] rounded-xl">
+                <p className="text-[#f0c040] text-xs font-semibold mb-1">¿Medios en inglés?</p>
+                <a href="/en/press" className="text-[#8888aa] text-xs hover:text-white transition-colors">
+                  Ver Press Kit en inglés → josuesolorzano.com/en/press
+                </a>
+              </div>
             </div>
 
             {/* Libro */}
