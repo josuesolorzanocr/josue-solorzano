@@ -77,7 +77,7 @@ export default function About({ lang = "es" }: AboutProps) {
             </span>
             <h2 className="text-4xl lg:text-5xl font-bold text-white mt-3 mb-6 leading-tight">
               {isEn ? (
-                <>Productos de calidad que <span className="gradient-text">escalan tu negocio</span></>
+                <>Quality products that <span className="gradient-text">scale your business</span></>
               ) : (
                 <>Productos de calidad que <span className="gradient-text">escalan tu negocio</span></>
               )}

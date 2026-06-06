@@ -22,6 +22,7 @@ export interface Combo {
   deliveryTime: string;
   deliveryTimeEn: string;
   step: string;
+  stepEn: string;
 }
 
 export const services: Service[] = [
@@ -85,21 +86,22 @@ export const services: Service[] = [
 
 export const combos: Combo[] = [
   {
-    name: "Auditoría de Autoridad",
-    nameEn: "Authority Audit",
+    name: "Auditoría de Presencia Digital",
+    nameEn: "Digital Presence Audit",
     price: "$297",
     priceNote: "pago único",
     priceNoteEn: "one-time payment",
     description: "Diagnóstico completo de tu presencia digital. Descubre cómo te ven Google y las IAs — y exactamente qué hacer para dominar tu mercado.",
     descriptionEn: "Complete digital presence diagnosis. Discover how Google and AIs see you — and exactly what to do to dominate your market.",
     step: "Paso 1 — Diagnóstico",
+    stepEn: "Step 1 — Diagnosis",
     features: [
       "Reporte de cómo aparece tu empresa en Google",
       "Análisis de qué dicen ChatGPT, Perplexity y Claude de ti",
       "Auditoría completa de tu sitio web actual",
       "Análisis vs. tus 5 competidores top",
       "Roadmap personalizado de 7 pasos priorizados",
-      "PDF profesional + video explicativo en inglés",
+      "PDF profesional + video explicativo",
       "Entrega en 48-72 horas",
     ],
     featuresEn: [
@@ -124,6 +126,7 @@ export const combos: Combo[] = [
     description: "Optimizamos tu presencia para que ChatGPT, Perplexity, Gemini y Claude te reconozcan y recomienden cuando alguien busca lo que tú ofreces.",
     descriptionEn: "We optimize your presence so ChatGPT, Perplexity, Gemini and Claude recognize and recommend you when someone searches for what you offer.",
     step: "Paso 2 — Implementación",
+    stepEn: "Step 2 — Implementation",
     features: [
       "Schema.org completo (Person, WebSite, FAQ)",
       "robots.txt optimizado para 20+ motores de IA",
@@ -157,6 +160,7 @@ export const combos: Combo[] = [
     description: "Transformación digital completa. Las 7 fases ejecutadas para que tu empresa sea la referencia indiscutible de su industria en Google y las IAs.",
     descriptionEn: "Complete digital transformation. All 7 phases executed so your business becomes the undeniable reference in its industry on Google and AIs.",
     step: "Paso 3 — Transformación Total",
+    stepEn: "Step 3 — Total Transformation",
     features: [
       "Todo lo de Visibilidad en IAs",
       "Sitio web premium (Next.js + Tailwind + animaciones)",

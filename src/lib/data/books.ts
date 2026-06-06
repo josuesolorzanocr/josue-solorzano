@@ -17,6 +17,7 @@ export interface Book {
   publisher: string;
   amazonUrl: string;
   testimonial: { quote: string; author: string };
+  testimonialEn: { quote: string; author: string };
   tags: string[];
   tagsEn: string[];
 }
@@ -44,6 +45,10 @@ export const books: Book[] = [
     amazonUrl: "https://a.co/d/0c5Ttyh8",
     testimonial: {
       quote: "Un libro serio para quien está listo a dejar de vivir en automático. Josué escribe con verdad, criterio y autoridad sobre la decisión más importante: despertar.",
+      author: "Spenser Hoffmann",
+    },
+    testimonialEn: {
+      quote: "A serious book for those ready to stop living on autopilot. Josué writes with truth, judgment and authority about the most important decision: waking up.",
       author: "Spenser Hoffmann",
     },
     tags: ["identidad", "autoridad", "disciplina", "desarrollo personal", "liderazgo"],

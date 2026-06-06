@@ -95,7 +95,7 @@ export default function ServicesSection({ lang = "es" }: ServicesSectionProps) {
                     ? "bg-[#b8860b] border-[#b8860b] text-white"
                     : "bg-[#111118] border-[#1e1e2e] text-[#8888aa]"
                 }`}>
-                  {isEn ? combo.step.replace("Paso", "Step") : combo.step}
+                  {isEn ? combo.stepEn : combo.step}
                 </div>
                 {i < combos.length - 1 && (
                   <div className="w-24 h-px bg-gradient-to-r from-[#b8860b44] to-[#b8860b22] mx-1 flex items-center justify-center">
@@ -133,7 +133,7 @@ export default function ServicesSection({ lang = "es" }: ServicesSectionProps) {
                 {/* Step label mobile */}
                 <div className="lg:hidden mb-4">
                   <span className="text-[#f0c040] text-xs font-semibold uppercase tracking-widest">
-                    {isEn ? combo.step.replace("Paso", "Step") : combo.step}
+                    {isEn ? combo.stepEn : combo.step}
                   </span>
                 </div>
 

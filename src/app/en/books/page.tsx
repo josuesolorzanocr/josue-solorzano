@@ -75,8 +75,8 @@ export default function BooksEnPage() {
       <section className="py-20 bg-[#0d0d14] border-y border-[#1e1e2e] mt-16">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="text-5xl text-[#b8860b] mb-6">&ldquo;</div>
-          <blockquote className="text-white text-xl lg:text-2xl leading-relaxed font-light italic mb-8">{book.testimonial.quote}</blockquote>
-          <cite className="text-[#b8860b] font-bold tracking-widest uppercase text-sm not-italic">— {book.testimonial.author}</cite>
+          <blockquote className="text-white text-xl lg:text-2xl leading-relaxed font-light italic mb-8">{book.testimonialEn.quote}</blockquote>
+          <cite className="text-[#b8860b] font-bold tracking-widest uppercase text-sm not-italic">— {book.testimonialEn.author}</cite>
         </div>
       </section>
 

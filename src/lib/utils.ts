@@ -23,7 +23,7 @@ export function slugify(text: string): string {
 }
 
 export const siteConfig = {
-  name: "Josue Solorzano",
+  name: "Josué Solórzano",
   description:
     "Servicios digitales premium: sitios web, optimización para IAs, primera página de Google, perfiles verificados y captura inteligente de leads.",
   descriptionEn:
@@ -34,5 +34,4 @@ export const siteConfig = {
   twitterHandle: "@josuesolorzano",
   linkedinHandle: "josuesolorzanocr",
   instagramHandle: "josuesolorzano",
-  youtubeHandle: "josuesolorzano",
 };
