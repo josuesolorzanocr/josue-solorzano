@@ -22,7 +22,7 @@ const values = [
   { icon: "🎯", title: "Precision", desc: "Every detail matters. I don't deliver anything that wouldn't meet my own standard." },
   { icon: "🚀", title: "Real results", desc: "I don't sell promises. I deliver systems that work and can be measured." },
   { icon: "🌍", title: "Global vision", desc: "From Costa Rica, I build digital presences that compete in any market in the world." },
-  { icon: "🤖", title: "Ahead of the curve", desc: "While others are just discovering AI, I'm already using it to position my clients inside it." },
+  { icon: "🤖", title: "AI-Native Execution", desc: "Built for the way people search today: Google, AI platforms, LinkedIn, websites and trust signals working together." },
 ];
 
 export default function AboutEnPage() {
@@ -49,11 +49,12 @@ export default function AboutEnPage() {
           </nav>
           <span className="text-[#f0c040] text-sm font-semibold uppercase tracking-widest">The story behind it</span>
           <h1 className="text-5xl lg:text-6xl font-bold text-white mt-3 mb-6 leading-tight">
-            I didn&apos;t come from the tech world.<br />
-            <span className="gradient-text">I came to transform it.</span>
+            I bring discipline, precision<br />
+            <span className="gradient-text">and modern AI systems</span><br />
+            to digital authority.
           </h1>
           <p className="text-[#8888aa] text-xl leading-relaxed">
-            A Costa Rican who went from the streets to the digital frontier — and now helps businesses around the world dominate the internet.
+            A Costa Rican specialist in premium digital authority — helping businesses around the world improve trust, visibility and conversion across Google, AI search and their entire online presence.
           </p>
         </div>
       </section>
@@ -89,19 +90,19 @@ export default function AboutEnPage() {
             {/* Content */}
             <div className="space-y-6 text-[#ccccdd] leading-relaxed">
               <p className="text-xl text-white font-medium">
-                There are things that shape you in ways you don&apos;t expect.
+                I come from Costa Rica with a background shaped by discipline, pressure and precision.
               </p>
               <p>
-                For years I worked as a police officer. A job that demands absolute discipline, attention to detail, and the ability to act with clarity when everything around you is chaos. I didn&apos;t leave those skills behind when I changed direction — I brought them with me.
+                Before entering the digital world, I worked as a police officer — a role that trained me to observe details, make decisions under pressure and never deliver unfinished work. Those skills don&apos;t leave you. They become your standard.
               </p>
               <p>
-                A few months ago I discovered the world of artificial intelligence and digital services. And what I saw made one thing clear: <strong className="text-white">most businesses in the world are completely invisible on the internet.</strong> No presence, no authority, no system to attract clients.
+                Today, I apply that same standard to digital authority: <strong className="text-white">premium websites, AI visibility, SEO structure, brand positioning and conversion systems for businesses that want to compete in global markets.</strong>
               </p>
               <p>
-                I decided to learn with the same intensity I trained for the most demanding job I&apos;d ever had. I studied SEO, premium web design, AI optimization, digital authority. And I realized I could build something very few people offer: <strong className="text-white">world-class results from Costa Rica, for clients in any corner of the planet.</strong>
+                I may not come from the traditional agency world — and that is exactly the advantage. I bring modern tools, AI-native execution and a disciplined process designed for today&apos;s market, where being found by Google and AI platforms matters as much as having a great product.
               </p>
               <p>
-                I don&apos;t have decades of experience. I have something better: fresh eyes, access to the world&apos;s most advanced tools, and the discipline of someone who never delivers half-finished work.
+                The result: a digital authority system built with the same attention to detail that kept me sharp in the most demanding job I&apos;ve ever had.
               </p>
 
               <div className="pt-4">

@@ -18,20 +18,20 @@ export default function ContactSection({ lang = "es" }: ContactSectionProps) {
 
   const services = isEn
     ? [
-        { icon: "🌐", title: "Premium Websites", desc: "High-converting, fast, and SEO-optimized sites." },
-        { icon: "📩", title: "Lead Capture System", desc: "Smart forms that send leads to email and WhatsApp." },
-        { icon: "🤖", title: "AI Optimization", desc: "Get cited by ChatGPT, Claude, and Perplexity." },
-        { icon: "📰", title: "Media Mentions", desc: "Appearances in recognized global media outlets." },
-        { icon: "🔍", title: "Google First Page", desc: "SEO strategy to dominate your niche." },
-        { icon: "✅", title: "Verified Profiles", desc: "HARO, LinkedIn, Wikidata, and more." },
+        { icon: "🌐", title: "Premium Authority Website", desc: "High-converting, fast, and designed to build trust and credibility." },
+        { icon: "📩", title: "Lead Capture System", desc: "Smart forms that send leads to email and WhatsApp instantly." },
+        { icon: "🤖", title: "AI Authority Optimization", desc: "Improve how AI platforms understand and classify your brand." },
+        { icon: "📰", title: "PR Assets & Media Outreach", desc: "Media kit, pitch emails and guest article templates." },
+        { icon: "🔍", title: "SEO & Discoverability Strategy", desc: "SEO strategy to improve authority and discoverability." },
+        { icon: "✅", title: "Authority Profiles & Credibility Assets", desc: "LinkedIn, author profiles, media pages and directory listings." },
       ]
     : [
-        { icon: "🌐", title: "Sitios Web Premium", desc: "Sitios rápidos, modernos y optimizados para conversión." },
+        { icon: "🌐", title: "Sitio Web Premium de Autoridad", desc: "Rápido, moderno y diseñado para generar confianza y credibilidad." },
         { icon: "📩", title: "Captura de Leads", desc: "Formularios inteligentes que envían leads a tu correo y WhatsApp." },
-        { icon: "🤖", title: "Optimización para IAs", desc: "Que ChatGPT, Claude y Perplexity te mencionen." },
-        { icon: "📰", title: "Menciones en Medios", desc: "Apariciones en medios reconocidos del mundo." },
-        { icon: "🔍", title: "Primera Página de Google", desc: "Estrategia SEO para dominar tu nicho." },
-        { icon: "✅", title: "Perfiles Verificados", desc: "HARO, LinkedIn, Wikidata y más." },
+        { icon: "🤖", title: "Optimización de Autoridad en IAs", desc: "Mejora cómo las plataformas de IA entienden y clasifican tu marca." },
+        { icon: "📰", title: "Activos de PR y Medios", desc: "Media kit, pitch emails y plantillas de artículos para medios." },
+        { icon: "🔍", title: "Estrategia SEO y Visibilidad", desc: "Estrategia SEO para mejorar autoridad y descubribilidad." },
+        { icon: "✅", title: "Perfiles de Autoridad y Credibilidad", desc: "LinkedIn, perfiles de autor, páginas de prensa y directorios." },
       ];
 
   async function handleSubmit(e: React.FormEvent) {
@@ -178,9 +178,10 @@ export default function ContactSection({ lang = "es" }: ContactSectionProps) {
                       className="w-full bg-[#0d0d14] border border-[#1e1e2e] rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-[#b8860b] transition-colors appearance-none"
                     >
                       <option value="">{isEn ? "Select a product..." : "Selecciona un producto..."}</option>
-                      <option>{isEn ? "Authority Audit — $297" : "Auditoría de Autoridad — $297"}</option>
-                      <option>{isEn ? "AI Visibility — $597" : "Visibilidad en IAs — $597"}</option>
-                      <option>{isEn ? "Digital Authority — Full Package — $2,500" : "Autoridad Digital — Paquete Completo — $2,500"}</option>
+                      <option>{isEn ? "Digital Authority Audit — $297" : "Auditoría de Autoridad Digital — $297"}</option>
+                      <option>{isEn ? "AI Authority Optimization — $597 Introductory" : "Optimización de Autoridad en IAs — $597 Introductorio"}</option>
+                      <option>{isEn ? "Digital Authority System — Founding Client $2,500" : "Sistema de Autoridad Digital — Cliente Fundador $2,500"}</option>
+                      <option>{isEn ? "Custom Authority Project — $5,000+" : "Proyecto de Autoridad Personalizado — $5,000+"}</option>
                       <option>{isEn ? "Question / Other" : "Tengo una pregunta / Otro"}</option>
                     </select>
                   </div>

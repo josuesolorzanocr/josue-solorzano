@@ -74,6 +74,18 @@ export default function Testimonials({ lang = "es" }: TestimonialsProps) {
           ))}
         </div>
 
+        {/* Disclaimer */}
+        <motion.p
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          className="text-center text-[#555566] text-xs mt-2 mb-8"
+        >
+          {isEn
+            ? "Results vary depending on market, competition, existing authority, and implementation scope."
+            : "Los resultados pueden variar según el mercado, la competencia, la autoridad existente y el alcance de la implementación."}
+        </motion.p>
+
         {/* Leave a review CTA */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}

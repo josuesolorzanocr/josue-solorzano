@@ -1,52 +1,56 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
-  <!-- Outer ring -->
-  <circle cx="100" cy="100" r="95" stroke="url(#gold)" stroke-width="3" fill="none"/>
 
-  <!-- Inner subtle ring -->
-  <circle cx="100" cy="100" r="82" stroke="url(#gold)" stroke-width="1" fill="none" opacity="0.4"/>
+  <!-- Dark background circle -->
+  <circle cx="100" cy="100" r="98" fill="#0a0a0f"/>
 
-  <!-- Background circle (transparent-friendly) -->
-  <circle cx="100" cy="100" r="78" fill="url(#bgGrad)" opacity="0.08"/>
+  <!-- Outer gold ring -->
+  <circle cx="100" cy="100" r="96" stroke="url(#goldRing)" stroke-width="2" fill="none"/>
 
-  <!-- J letter -->
-  <text x="38" y="128"
+  <!-- Inner gold ring thin -->
+  <circle cx="100" cy="100" r="86" stroke="#b8860b" stroke-width="0.5" fill="none" opacity="0.5"/>
+
+  <!-- Gold accent arc top -->
+  <path d="M 40 40 Q 100 10 160 40" stroke="url(#goldRing)" stroke-width="1.5" fill="none" opacity="0.6"/>
+
+  <!-- Gold accent arc bottom -->
+  <path d="M 40 160 Q 100 190 160 160" stroke="url(#goldRing)" stroke-width="1.5" fill="none" opacity="0.6"/>
+
+  <!-- JS Letters -->
+  <text x="100" y="122"
     font-family="Georgia, 'Times New Roman', serif"
-    font-size="88"
+    font-size="86"
     font-weight="700"
-    fill="url(#gold)"
-    letter-spacing="-4">J</text>
-
-  <!-- S letter -->
-  <text x="96" y="128"
-    font-family="Georgia, 'Times New Roman', serif"
-    font-size="88"
-    font-weight="700"
-    fill="url(#gold)"
-    letter-spacing="-4">S</text>
-
-  <!-- Bottom tagline -->
-  <text x="100" y="165"
-    font-family="Arial, Helvetica, sans-serif"
-    font-size="11"
-    font-weight="400"
-    fill="#b8860b"
+    fill="url(#goldText)"
     text-anchor="middle"
-    letter-spacing="5"
-    opacity="0.85">SOLÓRZANO</text>
+    letter-spacing="-2">JS</text>
 
-  <!-- Decorative lines -->
-  <line x1="28" y1="148" x2="64" y2="148" stroke="url(#gold)" stroke-width="1" opacity="0.5"/>
-  <line x1="136" y1="148" x2="172" y2="148" stroke="url(#gold)" stroke-width="1" opacity="0.5"/>
+  <!-- Thin divider line -->
+  <line x1="45" y1="138" x2="155" y2="138" stroke="url(#goldRing)" stroke-width="0.8" opacity="0.7"/>
+
+  <!-- Tagline -->
+  <text x="100" y="155"
+    font-family="Arial, Helvetica, sans-serif"
+    font-size="9.5"
+    font-weight="300"
+    fill="#f0c040"
+    text-anchor="middle"
+    letter-spacing="5.5"
+    opacity="0.9">SOLÓRZANO</text>
+
+  <!-- Corner diamond accents -->
+  <polygon points="100,6 104,10 100,14 96,10" fill="#b8860b" opacity="0.8"/>
+  <polygon points="100,186 104,190 100,194 96,190" fill="#b8860b" opacity="0.8"/>
 
   <defs>
-    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+    <linearGradient id="goldRing" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#f0c040"/>
+      <stop offset="40%" stop-color="#b8860b"/>
+      <stop offset="100%" stop-color="#f0c040"/>
+    </linearGradient>
+    <linearGradient id="goldText" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#f5d060"/>
       <stop offset="50%" stop-color="#b8860b"/>
       <stop offset="100%" stop-color="#e8a020"/>
     </linearGradient>
-    <radialGradient id="bgGrad" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#f0c040"/>
-      <stop offset="100%" stop-color="#b8860b" stop-opacity="0"/>
-    </radialGradient>
   </defs>
 </svg>

@@ -144,17 +144,29 @@ export default function ServicesSection({ lang = "es" }: ServicesSectionProps) {
                   </p>
                 </div>
 
-                <div className="mb-2">
+                <div className="mb-1">
                   <span className="text-5xl font-bold text-white">{combo.price}</span>
                   <span className="text-[#8888aa] text-sm ml-2">
                     {isEn ? combo.priceNoteEn : combo.priceNote}
                   </span>
                 </div>
 
-                <div className="flex items-center gap-2 mb-6 text-[#8888aa] text-xs">
+                {(isEn ? combo.priceContextEn : combo.priceContext) && (
+                  <div className="text-[#b8860b] text-xs font-medium mb-2">
+                    {isEn ? combo.priceContextEn : combo.priceContext}
+                  </div>
+                )}
+
+                <div className="flex items-center gap-2 mb-4 text-[#8888aa] text-xs">
                   <Clock size={12} />
                   <span>{isEn ? `Delivery: ${combo.deliveryTimeEn}` : `Entrega: ${combo.deliveryTime}`}</span>
                 </div>
+
+                {(isEn ? combo.idealForEn : combo.idealFor) && (
+                  <div className="text-[#8888aa] text-xs leading-relaxed italic mb-4 border-l-2 border-[#b8860b33] pl-3">
+                    {isEn ? combo.idealForEn : combo.idealFor}
+                  </div>
+                )}
 
                 <ul className="space-y-3 mb-8 flex-1">
                   {(isEn ? combo.featuresEn : combo.features).map((feature, j) => (
@@ -190,10 +202,10 @@ export default function ServicesSection({ lang = "es" }: ServicesSectionProps) {
             className="text-center text-[#8888aa] text-sm mt-10"
           >
             {isEn
-              ? "Not sure where to start? "
-              : "¿No sabes por dónde empezar? "}
+              ? "Not sure which level fits your business? Start with the Digital Authority Audit or "
+              : "¿No sabes qué nivel le conviene a tu negocio? Empieza con la Auditoría de Autoridad Digital o "}
             <Link href={isEn ? "/en#contact" : "/#contacto"} className="text-[#f0c040] hover:text-white transition-colors font-medium">
-              {isEn ? "Let's talk — it's free." : "Hablemos — es gratis."}
+              {isEn ? "book a free fit call." : "agenda una llamada gratuita."}
             </Link>
           </motion.p>
         </div>

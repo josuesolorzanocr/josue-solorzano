@@ -14,37 +14,38 @@ export const metadata: Metadata = {
 };
 
 const stats = [
-  { label: "Países donde ha trabajado", value: "12+" },
-  { label: "Clientes corporativos", value: "200+" },
+  { label: "Productos de Autoridad Digital", value: "3" },
+  { label: "Tiempo de Respuesta", value: "24h" },
   { label: "Libro publicado en Amazon", value: "1" },
-  { label: "Años de experiencia", value: "10+" },
+  { label: "Mercados Globales · USA · Europa · LATAM", value: "3" },
 ];
 
 const topics = [
   "Autoridad Digital y Posicionamiento de Marca Personal",
-  "Cómo hacer que ChatGPT, Perplexity y Google te recomienden",
-  "El Digital Authority Blueprint: presencia digital en 3 semanas",
+  "Cómo optimizar tu presencia digital para que Google y las IAs entiendan mejor tu autoridad",
+  "El Sistema de Autoridad Digital: 7 fases para construir presencia de clase mundial",
   "Identidad, Criterio y Responsabilidad Personal (Método C.A.D.)",
-  "Estrategias de Visibilidad Online para el Mercado USA",
-  "Liderazgo sin título: influir desde cualquier posición",
+  "Estrategias de Visibilidad Online para el Mercado USA y Europa",
+  "Por qué el SEO tradicional ya no es suficiente en la era de la búsqueda con IA",
 ];
 
 const pitchEmails = [
   {
     to: "Podcasts",
-    subject: "Guest pitch: Josué Solórzano — Digital Authority & AI Positioning Expert",
+    subject: "Guest pitch: Josué Solórzano — Digital Authority & AI Search Expert",
     body: `Hi [Host Name],
 
-I'm Josué Solórzano, a digital authority strategist from Costa Rica helping consultants, coaches, and executives build world-class online presence — so they get found by ChatGPT, Google, and premium clients.
+I'm Josué Solórzano, a digital authority specialist from Costa Rica helping experts, consultants, founders and service businesses build world-class online presence — so they become more visible, understood and trusted across Google, AI search and global markets.
 
 I'd love to be a guest on [Podcast Name]. Here's what I can bring to your audience:
 
-🎯 Topic: "How to Make AI Recommend You as the Expert in Your Field"
-— Why most professionals are invisible to ChatGPT and Perplexity
-— The 3 technical changes that make AI engines mention your name
-— The Digital Authority Blueprint: 7-phase system to dominate your niche online
+🎯 Topic: "How AI Search Is Changing Digital Authority for Experts and Businesses"
+— Why many professionals are invisible to AI-powered search
+— The authority signals AI platforms use to understand brands
+— How websites, schema, LinkedIn, PR and content work together
+— Why traditional SEO is no longer enough
 
-I've worked with 200+ corporate clients across 12 countries, published "Define Your Authority" on Amazon, and built a proven system that transforms online presence in under 3 weeks.
+I'm the author of "Define Your Authority" (Amazon) and creator of the Digital Authority System — a 7-phase framework that positions brands as trusted references in their industry.
 
 Happy to send a one-pager or jump on a 15-min call.
 
@@ -55,15 +56,16 @@ josuesolorzano.com | vjosue.3004@gmail.com
   },
   {
     to: "Medios y Revistas",
-    subject: "Expert source: AI visibility strategies for professionals — Josue Solorzano",
+    subject: "Expert source: Digital authority and AI search strategies — Josue Solorzano",
     body: `Hi [Editor/Reporter Name],
 
 I'm Josue Solorzano, a digital authority specialist based in Costa Rica, working with clients in the US, Europe, and Latin America.
 
 I'm available as an expert source for stories on:
-• How professionals can appear in ChatGPT and AI search results
+• How professionals and businesses can improve their visibility in AI-powered search
 • The new rules of digital authority in the AI era
-• Why traditional SEO is no longer enough
+• Why traditional SEO is no longer enough for brands competing globally
+• How schema, structured data, and entity signals shape AI understanding
 
 I can provide data, quotes, or a full interview at your convenience.
 
@@ -175,7 +177,7 @@ export default function MediaKitPage() {
                 <h2 className="text-white font-bold text-lg">Bio Corta (50 palabras)</h2>
               </div>
               <p className="text-[#ccccdd] leading-relaxed text-sm">
-                Josué Solórzano es especialista en autoridad digital y posicionamiento de marca. Ayuda a empresas a construir una presencia digital de clase mundial que las hace visibles en Google, ChatGPT y las principales IAs. Ha trabajado con más de 200 empresas en 12 países y es autor del libro &quot;Define Tu Autoridad&quot;.
+                Josué Solórzano es especialista en autoridad digital y posicionamiento de marca desde Costa Rica. Ayuda a expertos, consultores, fundadores y negocios de servicios a construir una presencia digital de clase mundial que mejora confianza, visibilidad y conversión en Google, IAs y mercados globales. Es autor del libro &quot;Define Tu Autoridad&quot;, publicado en Amazon.
               </p>
               <p className="mt-4 text-xs text-[#555566]">
                 Selecciona el texto y copia
@@ -189,9 +191,9 @@ export default function MediaKitPage() {
                 <h2 className="text-white font-bold text-lg">Bio Completa (150 palabras)</h2>
               </div>
               <p className="text-[#ccccdd] leading-relaxed text-sm">
-                Josué Solórzano es especialista en autoridad digital y posicionamiento de marca, trabajando con empresas en América Latina, Estados Unidos y Europa. Es creador del Digital Authority (DA), un sistema de 7 fases que transforma la presencia digital de empresas y profesionales en menos de 3 semanas.
+                Josué Solórzano es especialista en autoridad digital y posicionamiento de marca, trabajando con clientes en América Latina, Estados Unidos y Europa. Es creador del Sistema de Autoridad Digital (DA) — un sistema de 7 fases diseñado para posicionar marcas como referentes confiables en su industria, a través de sitio web premium, SEO avanzado, optimización para IAs y relaciones públicas digitales.
                 <br /><br />
-                Su metodología combina diseño web premium, SEO avanzado, optimización para inteligencias artificiales y relaciones públicas digitales para posicionar a sus clientes como la referencia indiscutible de su industria. Es autor del libro &quot;Define Tu Autoridad: Despierta Tu Nueva Identidad&quot;, publicado por Legacy Publishers y disponible en Amazon. Actualmente trabaja con empresas en USA, Canadá y Europa.
+                Con una formación marcada por disciplina operacional y ejecución bajo presión, aplica los mismos estándares de precisión al mundo digital. Es autor del libro &quot;Define Tu Autoridad: Despierta Tu Nueva Identidad&quot;, publicado por Legacy Publishers y disponible en Amazon. Actualmente entrega proyectos para clientes en USA, Europa y Latinoamérica.
               </p>
             </div>
 
@@ -202,9 +204,9 @@ export default function MediaKitPage() {
                 <h2 className="text-white font-bold text-lg">Official Bio (English)</h2>
               </div>
               <p className="text-[#ccccdd] leading-relaxed text-sm">
-                Josué Solórzano is a digital authority and brand positioning specialist helping businesses build world-class digital presence. He is the creator of the Digital Authority (DA) — a 7-phase system that transforms online presence in under 3 weeks, including premium website design, advanced SEO, AI optimization, and digital PR.
+                Josué Solórzano is a digital authority specialist from Costa Rica helping experts, consultants, founders and service businesses build world-class online presence. He is the creator of the Digital Authority System — a 7-phase framework that positions brands as trusted references across Google, AI search and global markets, through premium website design, advanced SEO, AI optimization, and digital PR.
                 <br /><br />
-                Josué has worked with 200+ businesses across 12 countries and is the author of &quot;Define Your Authority: Awaken Your New Identity,&quot; published by Legacy Publishers and available on Amazon. His clients get found by ChatGPT, Perplexity, Google, and premium audiences actively searching for their services.
+                With a background built on operational discipline and execution under pressure, Josué applies the same precision standard to every client project. He is the author of &quot;Define Your Authority: Awaken Your New Identity,&quot; published by Legacy Publishers and available on Amazon. He currently delivers projects for clients in the US, Europe and Latin America.
               </p>
             </div>
 

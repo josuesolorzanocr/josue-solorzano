@@ -62,9 +62,9 @@ export default function Hero({ lang = "es" }: HeroProps) {
             className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white leading-[1.08] tracking-tight mb-6"
           >
             {isEn ? (
-              <>Your brand, <span className="gradient-text">dominant</span><br />on the internet</>
+              <>Become the authority <span className="gradient-text">Google, AI</span><br />and premium clients can trust.</>
             ) : (
-              <>Tu marca, <span className="gradient-text">dominante</span><br />en internet</>
+              <>Conviértete en la autoridad que <span className="gradient-text">Google, las IAs</span><br />y los clientes premium pueden confiar.</>
             )}
           </motion.h1>
 
@@ -77,8 +77,8 @@ export default function Hero({ lang = "es" }: HeroProps) {
             className="text-lg sm:text-xl text-[#8888aa] leading-relaxed mb-10 max-w-2xl mx-auto"
           >
             {isEn
-              ? "Premium websites, AI-optimized content, verified profiles, and intelligent lead capture systems. We put your brand on the first page of Google — and in AI answers."
-              : "Sitios web premium, contenido optimizado para IAs, perfiles verificados y sistemas inteligentes de captura de leads. Ponemos tu marca en la primera página de Google — y en las respuestas de las IAs."}
+              ? "We build premium digital authority systems for experts, consultants, founders and service businesses who want to be found, understood and trusted across Google, AI search and their entire online presence."
+              : "Construimos sistemas premium de autoridad digital para expertos, consultores, fundadores y negocios de servicios que quieren ser encontrados, entendidos y confiables en Google, búsquedas con IA y toda su presencia online."}
           </motion.p>
 
           {/* CTAs */}
@@ -93,15 +93,15 @@ export default function Hero({ lang = "es" }: HeroProps) {
               href={isEn ? "/en#contact" : "/#contacto"}
               className="group flex items-center gap-2 bg-[#b8860b] hover:bg-[#a07708] text-white font-semibold px-8 py-4 rounded-xl transition-all glow text-base"
             >
-              {isEn ? "Get a free quote" : "Cotiza gratis"}
+              {isEn ? "Start with the $297 Authority Audit" : "Empieza con la Auditoría de $297"}
               <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
             </Link>
             <Link
-              href={isEn ? "/en#services" : "/#servicios"}
+              href={isEn ? "/en#pricing" : "/#precios"}
               className="flex items-center gap-2 text-white hover:text-[#f0c040] font-semibold px-8 py-4 rounded-xl border border-[#1e1e2e] hover:border-[#b8860b] transition-all text-base"
             >
               <Play size={16} className="fill-current" />
-              {isEn ? "See services" : "Ver servicios"}
+              {isEn ? "See the Digital Authority System" : "Ver el Sistema de Autoridad Digital"}
             </Link>
           </motion.div>
 
@@ -114,10 +114,10 @@ export default function Hero({ lang = "es" }: HeroProps) {
             className="mt-16 pt-8 border-t border-[#1e1e2e]"
           >
             <p className="text-[#8888aa] text-xs uppercase tracking-widest mb-6">
-              {isEn ? "Your brand visible on" : "Tu marca visible en"}
+              {isEn ? "Your brand visible across" : "Tu marca visible en"}
             </p>
             <div className="flex flex-wrap items-center justify-center gap-8 opacity-40">
-              {["Google", "ChatGPT", "Perplexity", "LinkedIn", "Wikidata", "HARO", "Claude"].map((brand) => (
+              {["Google Search", "ChatGPT", "Perplexity", "Gemini", "Claude", "LinkedIn", "Media"].map((brand) => (
                 <span key={brand} className="text-white font-bold text-sm tracking-wider">{brand}</span>
               ))}
             </div>

@@ -11,10 +11,10 @@ interface Stat {
 }
 
 const stats: Stat[] = [
-  { value: 7, suffix: "", label: "Servicios especializados", labelEn: "Specialized services" },
-  { value: 100, suffix: "%", label: "Alcance global", labelEn: "Global reach" },
-  { value: 24, suffix: "h", label: "Tiempo de respuesta máximo", labelEn: "Maximum response time" },
-  { value: 100, suffix: "%", label: "Enfoque en resultados reales", labelEn: "Focus on real results" },
+  { value: 3, suffix: "", label: "Productos de Autoridad", labelEn: "Authority Products" },
+  { value: 24, suffix: "h", label: "Tiempo de respuesta", labelEn: "Response Time" },
+  { value: 3, suffix: "", label: "Mercados Globales · USA · Europa · LATAM", labelEn: "Global Markets · USA · Europe · LATAM" },
+  { value: 7, suffix: "", label: "Fases · Sistema de Autoridad", labelEn: "Phases · Authority System" },
 ];
 
 function Counter({ value, suffix, duration = 2 }: { value: number; suffix: string; duration?: number }) {

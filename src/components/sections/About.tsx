@@ -15,15 +15,15 @@ export default function About({ lang = "es" }: AboutProps) {
   const highlights = isEn
     ? [
         "Premium websites built to convert visitors into clients — not just look good",
-        "Systems designed to scale: one site works for you 24/7 without extra effort",
+        "Authority systems designed to scale: website, SEO, AI signals and PR working together",
         "Every project is bilingual and optimized for global markets from day one",
-        "Measurable results: more leads, higher Google rankings, AI visibility",
+        "Improved trust, visibility and conversion across Google, AI search and your entire online presence",
       ]
     : [
         "Sitios web premium construidos para convertir visitantes en clientes — no solo verse bien",
-        "Sistemas diseñados para escalar: un sitio trabaja por ti 24/7 sin esfuerzo extra",
+        "Sistemas de autoridad diseñados para escalar: web, SEO, señales de IA y PR funcionando juntos",
         "Cada proyecto es bilingüe y optimizado para mercados globales desde el primer día",
-        "Resultados medibles: más leads, mejor posición en Google, visibilidad en IAs",
+        "Mayor confianza, visibilidad y conversión en Google, búsquedas con IA y toda tu presencia online",
       ];
 
   return (
@@ -85,13 +85,13 @@ export default function About({ lang = "es" }: AboutProps) {
             <div className="space-y-4 text-[#8888aa] leading-relaxed mb-8">
               <p>
                 {isEn
-                  ? "A premium digital presence isn't a cost — it's a machine that generates clients while you sleep. Every system we build is designed with one purpose: that your business grows without you having to be present every moment."
-                  : "Una presencia digital premium no es un gasto — es una máquina que genera clientes mientras duermes. Cada sistema que construimos está diseñado con un propósito: que tu negocio crezca sin que tengas que estar presente cada momento."}
+                  ? "A premium digital presence is not a cost — it is a trust infrastructure. It helps potential clients understand who you are, why you matter, and why your business deserves to be considered before they ever speak to you."
+                  : "Una presencia digital premium no es un costo; es una infraestructura de confianza. Ayuda a que tus prospectos entiendan quién eres, por qué importas y por qué tu negocio merece ser considerado antes de hablar contigo."}
               </p>
               <p>
                 {isEn
-                  ? "Quality is not negotiable. A slow site, a poorly positioned one, or one invisible to AIs costs you clients every single day. We build to the highest standard from day one — because mediocrity online is invisible."
-                  : "La calidad no es negociable. Un sitio lento, mal posicionado o invisible para las IAs te cuesta clientes todos los días. Construimos al más alto estándar desde el primer día — porque la mediocridad en internet es invisibilidad."}
+                  ? "Quality is not negotiable. A slow site, a poorly structured one, or one invisible to AI search costs you credibility every single day. We build to the highest standard from day one — because authority is built on consistency, not shortcuts."
+                  : "La calidad no es negociable. Un sitio lento, mal estructurado o invisible para las IAs te cuesta credibilidad todos los días. Construimos al más alto estándar desde el primer día — porque la autoridad se construye con consistencia, no con atajos."}
               </p>
             </div>
 

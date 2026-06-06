@@ -56,8 +56,8 @@ export default function Footer({ lang = "es" }: FooterProps) {
             </div>
             <p className="text-[#8888aa] text-sm leading-relaxed max-w-sm">
               {isEn
-                ? "We help businesses scale and position their brands globally. Premium websites, SEO, AI optimization, and digital authority systems built to grow your business while you sleep."
-                : "Ayudamos a negocios a escalar y posicionar sus marcas a nivel global. Sitios web premium, SEO, optimización para IAs y sistemas de autoridad digital diseñados para hacer crecer tu negocio mientras duermes."}
+                ? "We help experts, consultants, founders and service businesses build premium digital authority systems designed to improve trust, visibility and conversion across Google, AI search and global markets."
+                : "Ayudamos a expertos, consultores, fundadores y negocios de servicios a construir sistemas premium de autoridad digital diseñados para mejorar confianza, visibilidad y conversión en Google, búsquedas con IA y mercados globales."}
             </p>
             <div className="flex items-center gap-3 mt-6">
               {socialLinks.map((s) => (
