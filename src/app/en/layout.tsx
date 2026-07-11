@@ -32,8 +32,6 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    site: siteConfig.twitterHandle,
-    creator: siteConfig.twitterHandle,
     title: "Josue Solorzano | International Keynote Speaker",
     description: siteConfig.descriptionEn,
     images: ["/og-image.jpg"],

@@ -25,9 +25,9 @@ export function personSchema() {
     },
     email: siteConfig.email,
     sameAs: [
-      `https://twitter.com/${siteConfig.twitterHandle.replace("@", "")}`,
       `https://linkedin.com/in/${siteConfig.linkedinHandle}`,
       `https://instagram.com/${siteConfig.instagramHandle}`,
+      `https://www.facebook.com/${siteConfig.facebookHandle}`,
       // Amazon Author Central — Phase 4 DAB
       "https://www.amazon.com/author/josuesolorzano",
       // Amazon Author Page
