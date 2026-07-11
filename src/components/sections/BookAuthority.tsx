@@ -41,7 +41,7 @@ export default function BookAuthority({ lang = "es" }: BookAuthorityProps) {
             viewport={{ once: true }}
           >
             <span className="text-[#f0c040] text-sm font-semibold uppercase tracking-widest">
-              {isEn ? "Author & Speaker" : "Autor y Conferencista"}
+              {isEn ? "Author" : "Autor"}
             </span>
             <h2 className="text-3xl lg:text-4xl font-bold text-white mt-3 mb-4">
               {isEn ? "Authority backed by a published book" : "Autoridad respaldada por un libro publicado"}
