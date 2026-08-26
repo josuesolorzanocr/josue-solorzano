@@ -11,6 +11,9 @@ interface TestimonialsProps {
 export default function Testimonials({ lang = "es" }: TestimonialsProps) {
   const isEn = lang === "en";
 
+  // Sin testimonios reales no se muestra nada. Nada de reseñas inventadas.
+  if (testimonials.length === 0) return null;
+
   return (
     <section id="testimonios" className="py-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

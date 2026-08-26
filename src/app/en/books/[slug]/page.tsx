@@ -93,7 +93,7 @@ export default async function BookEnPage({ params }: Props) {
               <div className="mt-10 bg-[#111118] border border-[#1e1e2e] rounded-2xl p-6">
                 <h2 className="text-white font-bold text-lg mb-4">What you&apos;ll learn</h2>
                 <ul className="space-y-3">
-                  {["Practical frameworks you can implement from day one", "Real case studies from Latin American leaders who transformed their organizations", "Proven methodologies tested with 50,000+ leaders in 15 countries", "Self-assessment tools and personalized action plan"].map((item, i) => (
+                  {["The C.A.D. method: Clarity, Action and Discipline", "How to face your excuses instead of managing them", "A real story, not textbook theory", "Why authority starts with your own judgment, not a title"].map((item, i) => (
                     <li key={i} className="flex items-start gap-3">
                       <span className="w-5 h-5 rounded-full bg-[#7c3aed1a] border border-[#7c3aed33] flex items-center justify-center mt-0.5 flex-shrink-0">
                         <span className="w-1.5 h-1.5 rounded-full bg-[#a78bfa]" />

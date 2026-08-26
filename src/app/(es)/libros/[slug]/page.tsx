@@ -123,10 +123,10 @@ export default async function LibroPage({ params }: Props) {
                 <h2 className="text-white font-bold text-lg mb-4">¿Qué aprenderás?</h2>
                 <ul className="space-y-3">
                   {[
-                    "Frameworks prácticos que puedes implementar desde el primer día",
-                    "Casos reales de líderes latinoamericanos que transformaron sus organizaciones",
-                    "Metodologías probadas con más de 50,000 líderes en 15 países",
-                    "Herramientas de autoevaluación y plan de acción personalizado",
+                    "El método C.A.D.: Claridad, Acción y Disciplina",
+                    "Cómo mirar tus excusas de frente en vez de administrarlas",
+                    "Una historia real, no teoría de manual",
+                    "Por qué la autoridad empieza en el criterio propio, no en el título",
                   ].map((item, i) => (
                     <li key={i} className="flex items-start gap-3">
                       <span className="w-5 h-5 rounded-full bg-[#7c3aed1a] border border-[#7c3aed33] flex items-center justify-center mt-0.5 flex-shrink-0">
