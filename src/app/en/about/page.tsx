@@ -7,7 +7,7 @@ import { webPageSchema, personSchema } from "@/lib/schema";
 import ContactSection from "@/components/sections/ContactSection";
 
 export const metadata: Metadata = {
-  title: "About Josué Solórzano | Digital Authority Specialist",
+  title: { absolute: "About Josué Solórzano | Digital Authority Specialist" },
   description:
     "Meet Josué Solórzano: a Costa Rican specialist in premium digital services, AI optimization, and digital authority. Building world-class online presences from Costa Rica.",
   alternates: { canonical: `${siteConfig.url}/en/about` },

@@ -7,7 +7,7 @@ import { siteConfig, formatDate } from "@/lib/utils";
 import { webPageSchema } from "@/lib/schema";
 
 export const metadata: Metadata = {
-  title: "Blog de Marketing Digital y Servicios Web | Josue Solorzano",
+  title: { absolute: "Blog de Marketing Digital y Servicios Web | Josue Solorzano" },
   description:
     "Artículos de Josue Solorzano sobre sitios web premium, SEO, optimización para IAs, captura de leads y autoridad digital. Aprende a dominar internet.",
   keywords: ["blog marketing digital", "sitios web premium", "SEO para negocios", "optimización IA", "Josue Solorzano blog"],

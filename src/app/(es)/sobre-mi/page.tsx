@@ -7,7 +7,7 @@ import { webPageSchema, personSchema } from "@/lib/schema";
 import ContactSection from "@/components/sections/ContactSection";
 
 export const metadata: Metadata = {
-  title: "Sobre Mí | Josue Solorzano",
+  title: { absolute: "Sobre Mí | Josue Solorzano" },
   description:
     "Conoce a Josue Solorzano: experto en servicios digitales premium desde Costa Rica con alcance global. Sitios web, SEO, optimización para IAs y autoridad digital.",
   keywords: ["Josue Solorzano", "servicios digitales Costa Rica", "experto SEO", "optimización IA", "diseño web premium"],

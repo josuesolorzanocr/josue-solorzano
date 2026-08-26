@@ -54,13 +54,8 @@ export function personSchema() {
       },
     ],
     knowsLanguage: ["es", "en"],
-    interactionStatistic: [
-      {
-        "@type": "InteractionCounter",
-        interactionType: "https://schema.org/FollowAction",
-        userInteractionCount: 0,
-      },
-    ],
+    // interactionStatistic: se quitó el contador que declaraba 0 seguidores.
+    // Volver a ponerlo SOLO con conteos reales por plataforma (DAB Fase 6).
   };
 }
 

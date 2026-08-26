@@ -10,7 +10,7 @@ import { siteConfig } from "@/lib/utils";
 import { faqSchema, professionalServiceSchema } from "@/lib/schema";
 
 export const metadata: Metadata = {
-  title: "Josue Solorzano | Digital Growth & Brand Positioning Specialist",
+  title: { absolute: "Josue Solorzano | Digital Growth & Brand Positioning Specialist" },
   description:
     "Premium digital services from Costa Rica for clients in the USA, Europe, and worldwide. Websites, Google first page, AI optimization, and digital authority.",
   alternates: {

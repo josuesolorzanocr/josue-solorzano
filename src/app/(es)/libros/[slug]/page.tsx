@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!book) return {};
 
   return {
-    title: `${book.title} | Josue Solorzano`,
+    title: { absolute: `${book.title} | Josue Solorzano` },
     description: `${book.subtitle} — ${book.description.slice(0, 150)}...`,
     keywords: [...book.tags, "Josue Solorzano", "libro liderazgo"],
     alternates: { canonical: `${siteConfig.url}/libros/${book.slug}` },

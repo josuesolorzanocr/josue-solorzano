@@ -6,7 +6,7 @@ import { books } from "@/lib/data/books";
 import BookCarousel from "@/components/sections/BookCarousel";
 
 export const metadata: Metadata = {
-  title: "Define Tu Autoridad — Libro de Josué Solórzano",
+  title: { absolute: "Define Tu Autoridad — Libro de Josué Solórzano" },
   description:
     "Define Tu Autoridad: Despierta Tu Nueva Identidad. El libro de Josué Solórzano sobre identidad, disciplina y responsabilidad personal. Disponible en Amazon.",
   keywords: ["Define Tu Autoridad", "libro Josué Solórzano", "identidad", "disciplina", "autoridad personal", "Legacy Publishers"],
