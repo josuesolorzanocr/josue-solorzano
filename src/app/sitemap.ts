@@ -18,7 +18,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/en/blog`, lastModified: now, changeFrequency: "daily", priority: 0.95 },
     { url: `${base}/en/books`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
     // Media Kit — Phase 5 DAB
-    { url: `${base}/media-kit`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${base}/media-kit`, lastModified: now, changeFrequency: "monthly", priority: 0.7, alternates: { languages: { es: `${base}/media-kit`, en: `${base}/en/press` } } },
+    { url: `${base}/en/press`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
   ];
 
   const blogRoutes: MetadataRoute.Sitemap = blogPosts.flatMap((post) => [

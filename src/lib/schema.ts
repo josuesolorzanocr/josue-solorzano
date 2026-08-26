@@ -118,7 +118,6 @@ export function webPageSchema({
 export function bookSchema(book: {
   title: string;
   description: string;
-  isbn: string;
   year: number;
   publisher: string;
   slug: string;
@@ -128,7 +127,6 @@ export function bookSchema(book: {
     "@type": "Book",
     name: book.title,
     description: book.description,
-    isbn: book.isbn,
     numberOfPages: undefined,
     author: { "@id": `${siteConfig.url}/#person` },
     publisher: { "@type": "Organization", name: book.publisher },

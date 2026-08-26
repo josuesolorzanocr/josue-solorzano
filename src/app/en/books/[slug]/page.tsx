@@ -45,7 +45,7 @@ export default async function BookEnPage({ params }: Props) {
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(bookSchema({ title: book.titleEn, description: book.descriptionEn, isbn: book.isbn, year: book.year, publisher: book.publisher, slug: book.slug })) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(bookSchema({ title: book.titleEn, description: book.descriptionEn, year: book.year, publisher: book.publisher, slug: book.slug })) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema({ title: book.titleEn, description: book.subtitleEn, url: `${siteConfig.url}/en/books/${book.slug}`, breadcrumbs })) }} />
 
       <section className="pt-32 pb-16">
@@ -68,7 +68,7 @@ export default async function BookEnPage({ params }: Props) {
                 </div>
               </div>
               <div className="mt-6 bg-[#111118] border border-[#1e1e2e] rounded-xl p-5 space-y-3">
-                {[{ label: "Year", value: book.year.toString() }, { label: "Pages", value: `${book.pages} pages` }, { label: "ISBN", value: book.isbn }, { label: "Publisher", value: book.publisher }].map((item) => (
+                {[{ label: "Year", value: book.year.toString() }, { label: "Pages", value: `${book.pages} pages` }, { label: "Publisher", value: book.publisher }].map((item) => (
                   <div key={item.label} className="flex justify-between items-center text-sm">
                     <span className="text-[#8888aa]">{item.label}</span>
                     <span className="text-white font-medium">{item.value}</span>

@@ -46,7 +46,7 @@ export default async function LibroPage({ params }: Props) {
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(bookSchema({ title: book.title, description: book.description, isbn: book.isbn, year: book.year, publisher: book.publisher, slug: book.slug })) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(bookSchema({ title: book.title, description: book.description, year: book.year, publisher: book.publisher, slug: book.slug })) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema({ title: book.title, description: book.subtitle, url: `${siteConfig.url}/libros/${book.slug}`, breadcrumbs })) }} />
 
       <section className="pt-32 pb-16">
@@ -79,7 +79,6 @@ export default async function LibroPage({ params }: Props) {
                 {[
                   { label: "Año", value: book.year.toString() },
                   { label: "Páginas", value: `${book.pages} páginas` },
-                  { label: "ISBN", value: book.isbn },
                   { label: "Editorial", value: book.publisher },
                 ].map((item) => (
                   <div key={item.label} className="flex justify-between items-center text-sm">

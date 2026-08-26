@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const SPANISH_PATHS = ["/", "/sobre-mi", "/libros", "/conferencias", "/prensa", "/blog"];
-const EN_PATHS = ["/en", "/en/about", "/en/books", "/en/speaking", "/en/press", "/en/blog"];
+const SPANISH_PATHS = ["/", "/sobre-mi", "/libros", "/media-kit", "/blog"];
+const EN_PATHS = ["/en", "/en/about", "/en/books", "/en/press", "/en/blog"];
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;

@@ -13,7 +13,6 @@ export interface Book {
   coverColor: string;
   year: number;
   pages: number;
-  isbn: string;
   publisher: string;
   amazonUrl: string;
   testimonial: { quote: string; author: string };
@@ -40,7 +39,6 @@ export const books: Book[] = [
     coverColor: "#b8860b",
     year: 2024,
     pages: 200,
-    isbn: "978-XXX-XXX-XXX-X",
     publisher: "Legacy Publishers",
     amazonUrl: "https://a.co/d/0c5Ttyh8",
     testimonial: {
