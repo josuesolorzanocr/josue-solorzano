@@ -1,14 +1,21 @@
-name: Deploy to Vercel
+# Antes este workflow intentaba desplegar a Vercel con la CLI, pero los
+# secretos VERCEL_TOKEN, VERCEL_ORG_ID y VERCEL_PROJECT_ID nunca se
+# configuraron en el repositorio: fallaba en cada corrida.
+#
+# Quien despliega de verdad es la integración nativa de Vercel con GitHub
+# (proyecto `josuesolorzano-cr`). Duplicarlo aquí sólo producía alarmas
+# falsas y, peor, hacía que el job de lint arrastrara a los de despliegue.
+#
+# Este workflow se queda con lo único que aporta: revisar que el código
+# pase lint y tipos antes de mergear.
+
+name: CI
 
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
-
-env:
-  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
 jobs:
   lint:
@@ -23,43 +30,3 @@ jobs:
       - run: npm ci
       - run: npm run lint
       - run: npx tsc --noEmit
-
-  deploy-preview:
-    name: Deploy Preview
-    needs: lint
-    runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-      - name: Install Vercel CLI
-        run: npm install --global vercel@latest
-      - name: Pull Vercel Environment Information
-        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
-      - name: Build Project Artifacts
-        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
-      - name: Deploy Project Artifacts to Vercel
-        run: vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
-
-  deploy-production:
-    name: Deploy Production
-    needs: lint
-    runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-      - name: Install Vercel CLI
-        run: npm install --global vercel@latest
-      - name: Pull Vercel Environment Information
-        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
-      - name: Build Project Artifacts
-        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
-      - name: Deploy Project Artifacts to Vercel
-        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
