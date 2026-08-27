@@ -49,7 +49,7 @@ var REMITENTES = [
   { patron: "helpareporter.com", nombre: "HARO/Featured",     verificado: true  },
   { patron: "featured.com",      nombre: "HARO/Featured",     verificado: true  },
   { patron: "qwoted.com",        nombre: "Qwoted",            verificado: true  },
-  { patron: "sourceofsources",   nombre: "Source of Sources", verificado: false },
+  { patron: "sourceofsources",   nombre: "Source of Sources", verificado: true  },  // peter@sourceofsources.com
   { patron: "journorequests",    nombre: "JournoRequests",    verificado: false }
 ];
 
@@ -87,8 +87,12 @@ function revisarCorreos() {
   for (var i = 0; i < REMITENTES.length; i++) {
     if (REMITENTES[i].verificado) partes.push("from:" + REMITENTES[i].patron);
   }
+  // `in:anywhere` incluye Promociones y Spam. Sin eso, una consulta que Gmail
+  // clasifique mal se pierde en silencio, que es el peor tipo de falla.
+  // El riesgo es acotado: solo se buscan remitentes verificados o la etiqueta.
   var q = "{" + partes.join(" ") + "}" +
           ' -label:"' + CONFIG.ETIQUETA_LISTO + '"' +
+          ' in:anywhere' +
           ' newer_than:' + CONFIG.DIAS_ATRAS + 'd';
 
   var hilos = GmailApp.search(q, 0, CONFIG.MAX_POR_CORRIDA);
