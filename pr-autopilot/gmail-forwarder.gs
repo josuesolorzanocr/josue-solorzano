@@ -38,15 +38,17 @@ var CONFIG = {
 };
 
 /** De que plataforma viene, segun quien lo manda. Verificado, no inventado. */
-// `verificado: true` = Josue confirmo la direccion con un correo real.
+// `verificado: true` = se busca por ese remitente en Gmail.
+// Un remitente que nunca escribe no cuesta nada: Gmail devuelve cero.
+// Lo caro es al reves: NO buscar donde si llega trabajo.
 // Los demas son suposiciones: NO se usan para buscar, solo para etiquetar
 // de que plataforma viene un correo que ya entro por la etiqueta de Gmail.
 // Cuando confirme uno, cambielo a true y ya se busca solo.
 var REMITENTES = [
   { patron: "connectively.us",   nombre: "Connectively",      verificado: true  },
-  { patron: "helpareporter.com", nombre: "HARO/Featured",     verificado: false },
-  { patron: "featured.com",      nombre: "HARO/Featured",     verificado: false },
-  { patron: "qwoted.com",        nombre: "Qwoted",            verificado: false },
+  { patron: "helpareporter.com", nombre: "HARO/Featured",     verificado: true  },
+  { patron: "featured.com",      nombre: "HARO/Featured",     verificado: true  },
+  { patron: "qwoted.com",        nombre: "Qwoted",            verificado: true  },
   { patron: "sourceofsources",   nombre: "Source of Sources", verificado: false },
   { patron: "journorequests",    nombre: "JournoRequests",    verificado: false }
 ];
