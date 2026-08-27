@@ -37,13 +37,17 @@ var CONFIG = {
 };
 
 /** De qué plataforma viene, según quién lo manda. Verificado, no inventado. */
+// `verificado: true` = Josue confirmó la dirección con un correo real.
+// Los demás son suposiciones: NO se usan para buscar, sólo para etiquetar
+// de qué plataforma viene un correo que ya entró por la etiqueta de Gmail.
+// Cuando confirme uno, cámbielo a true y ya se busca solo.
 var REMITENTES = [
-  { patron: "connectively.us",   nombre: "Connectively"      },  // community@connectively.us
-  { patron: "helpareporter.com", nombre: "HARO/Featured"     },
-  { patron: "featured.com",      nombre: "HARO/Featured"     },
-  { patron: "qwoted.com",        nombre: "Qwoted"            },
-  { patron: "sourceofsources",   nombre: "Source of Sources" },
-  { patron: "journorequests",    nombre: "JournoRequests"    }
+  { patron: "connectively.us",   nombre: "Connectively",      verificado: true  },
+  { patron: "helpareporter.com", nombre: "HARO/Featured",     verificado: false },
+  { patron: "featured.com",      nombre: "HARO/Featured",     verificado: false },
+  { patron: "qwoted.com",        nombre: "Qwoted",            verificado: false },
+  { patron: "sourceofsources",   nombre: "Source of Sources", verificado: false },
+  { patron: "journorequests",    nombre: "JournoRequests",    verificado: false }
 ];
 
 function secreto_() {
@@ -72,7 +76,15 @@ function revisarCorreos() {
   var entrada = etiqueta_(CONFIG.ETIQUETA_ENTRADA);
   var listo = etiqueta_(CONFIG.ETIQUETA_LISTO);
 
-  var q = 'label:"' + CONFIG.ETIQUETA_ENTRADA + '"' +
+  // Busca por etiqueta O por remitente conocido. Con cualquiera de las dos
+  // basta: si usted no creó el filtro de Gmail, los remitentes verificados
+  // igual entran. Y si mañana agrega una plataforma, le pone la etiqueta y
+  // funciona sin tocar este código.
+  var partes = ['label:"' + CONFIG.ETIQUETA_ENTRADA + '"'];
+  for (var i = 0; i < REMITENTES.length; i++) {
+    if (REMITENTES[i].verificado) partes.push("from:" + REMITENTES[i].patron);
+  }
+  var q = "{" + partes.join(" ") + "}" +
           ' -label:"' + CONFIG.ETIQUETA_LISTO + '"' +
           ' newer_than:' + CONFIG.DIAS_ATRAS + 'd';
 
@@ -149,6 +161,11 @@ function diagnostico() {
     Logger.log("Correos con la etiqueta: " + GmailApp.search('label:"' + CONFIG.ETIQUETA_ENTRADA + '"').length);
   }
   Logger.log("Ya enviados: " + (l ? GmailApp.search('label:"' + CONFIG.ETIQUETA_LISTO + '"').length : 0));
+  for (var i = 0; i < REMITENTES.length; i++) {
+    if (!REMITENTES[i].verificado) continue;
+    var n = GmailApp.search("from:" + REMITENTES[i].patron + " newer_than:30d").length;
+    Logger.log("Correos de " + REMITENTES[i].nombre + " (30 días): " + n);
+  }
   Logger.log("Secreto configurado: " +
     (PropertiesService.getScriptProperties().getProperty("WEBHOOK_SECRET") ? "SÍ" : "NO"));
 }
