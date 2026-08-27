@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     "Premium digital services from Costa Rica for clients in the USA, Europe, and worldwide. Websites, Google first page, AI optimization, and digital authority.",
   alternates: {
     canonical: `${siteConfig.url}/en`,
-    languages: { es: siteConfig.url, en: `${siteConfig.url}/en` },
+    languages: { es: siteConfig.url, en: `${siteConfig.url}/en`, "x-default": siteConfig.url },
   },
   openGraph: {
     title: "Josue Solorzano | Digital Growth & Brand Positioning Specialist",

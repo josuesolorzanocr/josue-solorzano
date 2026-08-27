@@ -2,14 +2,14 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Mail, Globe, Users, BookOpen, Mic, Building2 } from "lucide-react";
-import { siteConfig } from "@/lib/utils";
+import { siteConfig, alternatesCanonicas } from "@/lib/utils";
 import { webPageSchema } from "@/lib/schema";
 
 export const metadata: Metadata = {
   title: { absolute: "Media Kit | Josue Solorzano" },
   description:
     "Media kit profesional de Josue Solorzano. Bio oficial, estadísticas, temas de conferencias, libros publicados y contacto para medios, podcasts y prensa.",
-  alternates: { canonical: `${siteConfig.url}/media-kit` },
+  alternates: alternatesCanonicas("es", "/media-kit", "/en/press"),
   robots: { index: true, follow: true },
 };
 

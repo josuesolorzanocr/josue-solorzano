@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { siteConfig } from "@/lib/utils";
+import { siteConfig, alternatesCanonicas } from "@/lib/utils";
 import { webPageSchema, personSchema } from "@/lib/schema";
 import ContactSection from "@/components/sections/ContactSection";
 
@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   title: { absolute: "About Josué Solórzano | Digital Authority Specialist" },
   description:
     "Meet Josué Solórzano: a Costa Rican specialist in premium digital services, AI optimization, and digital authority. Building world-class online presences from Costa Rica.",
-  alternates: { canonical: `${siteConfig.url}/en/about` },
+  alternates: alternatesCanonicas("en", "/sobre-mi", "/en/about"),
   openGraph: {
     title: "About Josué Solórzano",
     description: "Costa Rican specialist in digital authority, AI optimization, and premium websites for global markets.",

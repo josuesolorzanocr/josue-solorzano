@@ -3,14 +3,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Clock } from "lucide-react";
 import { blogPosts } from "@/lib/data/blog-posts";
-import { siteConfig, formatDate } from "@/lib/utils";
+import { siteConfig, formatDate, alternatesCanonicas } from "@/lib/utils";
 import { webPageSchema } from "@/lib/schema";
 
 export const metadata: Metadata = {
   title: "Digital Marketing & Web Services Blog | Josue Solorzano",
   description: "Articles by Josue Solorzano on premium websites, SEO, AI optimization, lead capture, and digital authority. Learn to dominate the internet.",
   keywords: ["digital marketing blog", "premium websites", "SEO for business", "AI optimization", "Josue Solorzano blog"],
-  alternates: { canonical: `${siteConfig.url}/en/blog` },
+  alternates: alternatesCanonicas("en", "/blog", "/en/blog"),
 };
 
 export default function BlogEnPage() {

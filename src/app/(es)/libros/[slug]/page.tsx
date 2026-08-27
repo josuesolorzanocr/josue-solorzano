@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { BookOpen, ArrowLeft, ArrowRight } from "lucide-react";
 import { books, getBookBySlug } from "@/lib/data/books";
-import { siteConfig } from "@/lib/utils";
+import { siteConfig, alternatesCanonicas } from "@/lib/utils";
 import { bookSchema, webPageSchema } from "@/lib/schema";
 
 interface Props {
@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: { absolute: `${book.title} | Josue Solorzano` },
     description: `${book.subtitle} — ${book.description.slice(0, 150)}...`,
     keywords: [...book.tags, "Josue Solorzano", "libro liderazgo"],
-    alternates: { canonical: `${siteConfig.url}/libros/${book.slug}` },
+    alternates: alternatesCanonicas("es", `/libros/${book.slug}`, `/en/books/${book.slug}`),
     openGraph: {
       title: book.title,
       description: book.subtitle,

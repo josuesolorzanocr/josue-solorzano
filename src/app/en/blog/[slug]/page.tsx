@@ -26,7 +26,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     keywords: post.tagsEn,
     alternates: {
       canonical: `${siteConfig.url}/en/blog/${post.slugEn}`,
-      languages: { es: `${siteConfig.url}/blog/${post.slug}`, en: `${siteConfig.url}/en/blog/${post.slugEn}` },
+      languages: {
+        es: `${siteConfig.url}/blog/${post.slug}`,
+        en: `${siteConfig.url}/en/blog/${post.slugEn}`,
+        "x-default": `${siteConfig.url}/blog/${post.slug}`,
+      },
     },
     openGraph: { type: "article", title: post.titleEn, description: post.excerptEn, url: `${siteConfig.url}/en/blog/${post.slugEn}`, publishedTime: post.publishedAt, authors: ["Josue Solorzano"], images: [{ url: post.image, width: 1200, height: 630, alt: post.titleEn }] },
     twitter: { card: "summary_large_image", title: post.titleEn, description: post.excerptEn, images: [post.image] },

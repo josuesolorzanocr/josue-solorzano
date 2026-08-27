@@ -2,7 +2,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
-import { siteConfig } from "@/lib/utils";
+import { siteConfig, alternatesCanonicas } from "@/lib/utils";
 import { webPageSchema, personSchema } from "@/lib/schema";
 import ContactSection from "@/components/sections/ContactSection";
 
@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   description:
     "Conoce a Josue Solorzano: experto en servicios digitales premium desde Costa Rica con alcance global. Sitios web, SEO, optimización para IAs y autoridad digital.",
   keywords: ["Josue Solorzano", "servicios digitales Costa Rica", "experto SEO", "optimización IA", "diseño web premium"],
-  alternates: { canonical: `${siteConfig.url}/sobre-mi` },
+  alternates: alternatesCanonicas("es", "/sobre-mi", "/en/about"),
 };
 
 const values = [

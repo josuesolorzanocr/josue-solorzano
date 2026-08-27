@@ -1,6 +1,6 @@
 ﻿import type { Metadata } from "next";
 import Link from "next/link";
-import { siteConfig } from "@/lib/utils";
+import { siteConfig, alternatesCanonicas } from "@/lib/utils";
 import { webPageSchema, bookSchema } from "@/lib/schema";
 import { books } from "@/lib/data/books";
 import BookCarousel from "@/components/sections/BookCarousel";
@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   description:
     "Define Tu Autoridad: Despierta Tu Nueva Identidad. El libro de Josué Solórzano sobre identidad, disciplina y responsabilidad personal. Disponible en Amazon.",
   keywords: ["Define Tu Autoridad", "libro Josué Solórzano", "identidad", "disciplina", "autoridad personal", "Legacy Publishers"],
-  alternates: { canonical: `${siteConfig.url}/libros` },
+  alternates: alternatesCanonicas("es", "/libros", "/en/books"),
   openGraph: {
     title: "Define Tu Autoridad — Josué Solórzano",
     description: "Despierta Tu Nueva Identidad. Un libro sobre identidad, criterio y responsabilidad personal.",

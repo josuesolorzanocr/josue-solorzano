@@ -26,7 +26,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     keywords: post.tags,
     alternates: {
       canonical: `${siteConfig.url}/blog/${post.slug}`,
-      languages: { en: `${siteConfig.url}/en/blog/${post.slugEn}` },
+      languages: {
+        es: `${siteConfig.url}/blog/${post.slug}`,
+        en: `${siteConfig.url}/en/blog/${post.slugEn}`,
+        "x-default": `${siteConfig.url}/blog/${post.slug}`,
+      },
     },
     openGraph: {
       type: "article",
