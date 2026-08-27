@@ -54,13 +54,8 @@ export function personSchema() {
       },
     ],
     knowsLanguage: ["es", "en"],
-    interactionStatistic: [
-      {
-        "@type": "InteractionCounter",
-        interactionType: "https://schema.org/FollowAction",
-        userInteractionCount: 0,
-      },
-    ],
+    // interactionStatistic: se quitó el contador que declaraba 0 seguidores.
+    // Volver a ponerlo SOLO con conteos reales por plataforma (DAB Fase 6).
   };
 }
 
@@ -123,7 +118,6 @@ export function webPageSchema({
 export function bookSchema(book: {
   title: string;
   description: string;
-  isbn: string;
   year: number;
   publisher: string;
   slug: string;
@@ -133,7 +127,6 @@ export function bookSchema(book: {
     "@type": "Book",
     name: book.title,
     description: book.description,
-    isbn: book.isbn,
     numberOfPages: undefined,
     author: { "@id": `${siteConfig.url}/#person` },
     publisher: { "@type": "Organization", name: book.publisher },

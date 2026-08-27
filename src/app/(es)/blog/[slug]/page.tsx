@@ -66,9 +66,9 @@ export default async function BlogPostPage({ params }: Props) {
         </div>
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <nav aria-label="breadcrumb" className="flex items-center gap-2 text-xs text-[#8888aa] mb-8">
-            <a href="/" className="hover:text-white transition-colors">Inicio</a>
+            <Link href="/" className="hover:text-white transition-colors">Inicio</Link>
             <span>/</span>
-            <a href="/blog" className="hover:text-white transition-colors">Blog</a>
+            <Link href="/blog" className="hover:text-white transition-colors">Blog</Link>
             <span>/</span>
             <span className="text-[#a78bfa] truncate max-w-xs">{post.title}</span>
           </nav>

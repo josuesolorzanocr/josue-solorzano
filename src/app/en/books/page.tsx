@@ -31,7 +31,7 @@ export default function BooksEnPage() {
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(bookSchema({ title: book.titleEn, description: book.descriptionEn, isbn: book.isbn, year: book.year, publisher: book.publisher, slug: book.slug })) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(bookSchema({ title: book.titleEn, description: book.descriptionEn, year: book.year, publisher: book.publisher, slug: book.slug })) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema({ title: "Define Your Authority — Josué Solórzano", description: book.descriptionEn, url: `${siteConfig.url}/en/books`, breadcrumbs })) }} />
 
       <section className="pt-32 pb-8 relative">

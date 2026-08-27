@@ -7,7 +7,7 @@ import { siteConfig, formatDate } from "@/lib/utils";
 import { webPageSchema } from "@/lib/schema";
 
 export const metadata: Metadata = {
-  title: "Blog de Marketing Digital y Servicios Web | Josue Solorzano",
+  title: { absolute: "Blog de Marketing Digital y Servicios Web | Josue Solorzano" },
   description:
     "Artículos de Josue Solorzano sobre sitios web premium, SEO, optimización para IAs, captura de leads y autoridad digital. Aprende a dominar internet.",
   keywords: ["blog marketing digital", "sitios web premium", "SEO para negocios", "optimización IA", "Josue Solorzano blog"],
@@ -39,7 +39,7 @@ export default function BlogPage() {
         </div>
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <nav aria-label="breadcrumb" className="flex items-center justify-center gap-2 text-xs text-[#8888aa] mb-8">
-            <a href="/" className="hover:text-white transition-colors">Inicio</a>
+            <Link href="/" className="hover:text-white transition-colors">Inicio</Link>
             <span>/</span>
             <span className="text-[#f0c040]">Blog</span>
           </nav>

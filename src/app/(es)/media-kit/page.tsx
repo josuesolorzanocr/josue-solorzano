@@ -6,7 +6,7 @@ import { siteConfig } from "@/lib/utils";
 import { webPageSchema } from "@/lib/schema";
 
 export const metadata: Metadata = {
-  title: "Media Kit | Josue Solorzano",
+  title: { absolute: "Media Kit | Josue Solorzano" },
   description:
     "Media kit profesional de Josue Solorzano. Bio oficial, estadísticas, temas de conferencias, libros publicados y contacto para medios, podcasts y prensa.",
   alternates: { canonical: `${siteConfig.url}/media-kit` },

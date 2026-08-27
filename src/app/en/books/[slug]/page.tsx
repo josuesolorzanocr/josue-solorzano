@@ -45,15 +45,15 @@ export default async function BookEnPage({ params }: Props) {
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(bookSchema({ title: book.titleEn, description: book.descriptionEn, isbn: book.isbn, year: book.year, publisher: book.publisher, slug: book.slug })) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(bookSchema({ title: book.titleEn, description: book.descriptionEn, year: book.year, publisher: book.publisher, slug: book.slug })) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema({ title: book.titleEn, description: book.subtitleEn, url: `${siteConfig.url}/en/books/${book.slug}`, breadcrumbs })) }} />
 
       <section className="pt-32 pb-16">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <nav aria-label="breadcrumb" className="flex items-center gap-2 text-xs text-[#8888aa] mb-8">
-            <a href="/en" className="hover:text-white transition-colors">Home</a>
+            <Link href="/en" className="hover:text-white transition-colors">Home</Link>
             <span>/</span>
-            <a href="/en/books" className="hover:text-white transition-colors">Books</a>
+            <Link href="/en/books" className="hover:text-white transition-colors">Books</Link>
             <span>/</span>
             <span className="text-[#a78bfa]">{book.titleEn}</span>
           </nav>
@@ -68,7 +68,7 @@ export default async function BookEnPage({ params }: Props) {
                 </div>
               </div>
               <div className="mt-6 bg-[#111118] border border-[#1e1e2e] rounded-xl p-5 space-y-3">
-                {[{ label: "Year", value: book.year.toString() }, { label: "Pages", value: `${book.pages} pages` }, { label: "ISBN", value: book.isbn }, { label: "Publisher", value: book.publisher }].map((item) => (
+                {[{ label: "Year", value: book.year.toString() }, { label: "Pages", value: `${book.pages} pages` }, { label: "Publisher", value: book.publisher }].map((item) => (
                   <div key={item.label} className="flex justify-between items-center text-sm">
                     <span className="text-[#8888aa]">{item.label}</span>
                     <span className="text-white font-medium">{item.value}</span>
@@ -93,7 +93,7 @@ export default async function BookEnPage({ params }: Props) {
               <div className="mt-10 bg-[#111118] border border-[#1e1e2e] rounded-2xl p-6">
                 <h2 className="text-white font-bold text-lg mb-4">What you&apos;ll learn</h2>
                 <ul className="space-y-3">
-                  {["Practical frameworks you can implement from day one", "Real case studies from Latin American leaders who transformed their organizations", "Proven methodologies tested with 50,000+ leaders in 15 countries", "Self-assessment tools and personalized action plan"].map((item, i) => (
+                  {["The C.A.D. method: Clarity, Action and Discipline", "How to face your excuses instead of managing them", "A real story, not textbook theory", "Why authority starts with your own judgment, not a title"].map((item, i) => (
                     <li key={i} className="flex items-start gap-3">
                       <span className="w-5 h-5 rounded-full bg-[#7c3aed1a] border border-[#7c3aed33] flex items-center justify-center mt-0.5 flex-shrink-0">
                         <span className="w-1.5 h-1.5 rounded-full bg-[#a78bfa]" />

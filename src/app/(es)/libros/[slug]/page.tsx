@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!book) return {};
 
   return {
-    title: `${book.title} | Josue Solorzano`,
+    title: { absolute: `${book.title} | Josue Solorzano` },
     description: `${book.subtitle} — ${book.description.slice(0, 150)}...`,
     keywords: [...book.tags, "Josue Solorzano", "libro liderazgo"],
     alternates: { canonical: `${siteConfig.url}/libros/${book.slug}` },
@@ -46,15 +46,15 @@ export default async function LibroPage({ params }: Props) {
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(bookSchema({ title: book.title, description: book.description, isbn: book.isbn, year: book.year, publisher: book.publisher, slug: book.slug })) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(bookSchema({ title: book.title, description: book.description, year: book.year, publisher: book.publisher, slug: book.slug })) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema({ title: book.title, description: book.subtitle, url: `${siteConfig.url}/libros/${book.slug}`, breadcrumbs })) }} />
 
       <section className="pt-32 pb-16">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <nav aria-label="breadcrumb" className="flex items-center gap-2 text-xs text-[#8888aa] mb-8">
-            <a href="/" className="hover:text-white transition-colors">Inicio</a>
+            <Link href="/" className="hover:text-white transition-colors">Inicio</Link>
             <span>/</span>
-            <a href="/libros" className="hover:text-white transition-colors">Libros</a>
+            <Link href="/libros" className="hover:text-white transition-colors">Libros</Link>
             <span>/</span>
             <span className="text-[#a78bfa]">{book.title}</span>
           </nav>
@@ -79,7 +79,6 @@ export default async function LibroPage({ params }: Props) {
                 {[
                   { label: "Año", value: book.year.toString() },
                   { label: "Páginas", value: `${book.pages} páginas` },
-                  { label: "ISBN", value: book.isbn },
                   { label: "Editorial", value: book.publisher },
                 ].map((item) => (
                   <div key={item.label} className="flex justify-between items-center text-sm">
@@ -124,10 +123,10 @@ export default async function LibroPage({ params }: Props) {
                 <h2 className="text-white font-bold text-lg mb-4">¿Qué aprenderás?</h2>
                 <ul className="space-y-3">
                   {[
-                    "Frameworks prácticos que puedes implementar desde el primer día",
-                    "Casos reales de líderes latinoamericanos que transformaron sus organizaciones",
-                    "Metodologías probadas con más de 50,000 líderes en 15 países",
-                    "Herramientas de autoevaluación y plan de acción personalizado",
+                    "El método C.A.D.: Claridad, Acción y Disciplina",
+                    "Cómo mirar tus excusas de frente en vez de administrarlas",
+                    "Una historia real, no teoría de manual",
+                    "Por qué la autoridad empieza en el criterio propio, no en el título",
                   ].map((item, i) => (
                     <li key={i} className="flex items-start gap-3">
                       <span className="w-5 h-5 rounded-full bg-[#7c3aed1a] border border-[#7c3aed33] flex items-center justify-center mt-0.5 flex-shrink-0">
