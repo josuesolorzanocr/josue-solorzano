@@ -20,6 +20,7 @@ Trabaja con expertos, consultores y fundadores de servicios profesionales.
 Áreas: Schema.org y datos estructurados, robots.txt para crawlers de IA, SEO técnico,
 Wikidata, sitios premium en Next.js, captura de leads.
 Autor del libro "Define Tu Autoridad".
+Sitio web: https://josuesolorzano.com  (usalo tal cual, nunca como marcador)
 Idiomas: español e inglés.
 `.trim();
 
@@ -65,7 +66,16 @@ Hacé dos cosas:
    - Solo afirmaciones que el perfil respalde. NUNCA inventes números de clientes,
      años, premios, apariciones en medios ni tamaño de audiencia.
    - Nada de superlativos ("líder", "el mejor", "reconocido mundialmente").
-   - Cerrá con una línea de identificación: nombre, qué hace, sitio web.
+   - Cerrá SIEMPRE con una línea de firma. TODA la firma va en el mismo idioma
+     que el borrador. Copiá uno de estos dos formatos según el idioma:
+
+     Si el borrador está en INGLÉS:
+       Josué Solórzano — digital authority and AI search visibility — https://josuesolorzano.com
+     Si el borrador está en ESPAÑOL:
+       Josué Solórzano — autoridad digital y visibilidad en buscadores de IA — https://josuesolorzano.com
+
+     La dirección va literal y completa. Está prohibido escribir "[website]",
+     "website available on request" o cualquier otro rodeo: el dato lo tenés.
    - Si el score es menor a 20, el draft debe ser una sola línea:
      "No responder: fuera de su área."
 
