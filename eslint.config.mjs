@@ -1,14 +1,21 @@
-import { dirname } from "path";
-import { fileURLToPath } from "url";
-import { FlatCompat } from "@eslint/eslintrc";
+// Next 16 quitó el comando `next lint`. ESLint 9 usa "flat config" y exige
+// este archivo; sin él, `npm run lint` reventaba y el CI llevaba commits
+// fallando en silencio, lo que además saltaba los pasos de despliegue.
+import coreWebVitals from "eslint-config-next/core-web-vitals";
+import typescript from "eslint-config-next/typescript";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-const compat = new FlatCompat({ baseDirectory: __dirname });
-
-const eslintConfig = [
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
+export default [
+  {
+    ignores: [
+      ".next/**",
+      "node_modules/**",
+      "out/**",
+      "build/**",
+      "next-env.d.ts",
+      // Apps Script de Google: no es un módulo de este proyecto.
+      "pr-autopilot/**",
+    ],
+  },
+  ...coreWebVitals,
+  ...typescript,
 ];
-
-export default eslintConfig;

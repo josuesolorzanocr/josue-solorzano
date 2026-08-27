@@ -52,9 +52,9 @@ export default async function LibroPage({ params }: Props) {
       <section className="pt-32 pb-16">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <nav aria-label="breadcrumb" className="flex items-center gap-2 text-xs text-[#8888aa] mb-8">
-            <a href="/" className="hover:text-white transition-colors">Inicio</a>
+            <Link href="/" className="hover:text-white transition-colors">Inicio</Link>
             <span>/</span>
-            <a href="/libros" className="hover:text-white transition-colors">Libros</a>
+            <Link href="/libros" className="hover:text-white transition-colors">Libros</Link>
             <span>/</span>
             <span className="text-[#a78bfa]">{book.title}</span>
           </nav>

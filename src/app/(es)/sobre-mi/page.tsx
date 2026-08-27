@@ -39,7 +39,7 @@ export default function SobreMiPage() {
         </div>
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <nav aria-label="breadcrumb" className="flex items-center justify-center gap-2 text-xs text-[#8888aa] mb-8">
-            <a href="/" className="hover:text-white transition-colors">Inicio</a>
+            <Link href="/" className="hover:text-white transition-colors">Inicio</Link>
             <span>/</span>
             <span className="text-[#f0c040]">Sobre Mí</span>
           </nav>

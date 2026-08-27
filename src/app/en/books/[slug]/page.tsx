@@ -51,9 +51,9 @@ export default async function BookEnPage({ params }: Props) {
       <section className="pt-32 pb-16">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <nav aria-label="breadcrumb" className="flex items-center gap-2 text-xs text-[#8888aa] mb-8">
-            <a href="/en" className="hover:text-white transition-colors">Home</a>
+            <Link href="/en" className="hover:text-white transition-colors">Home</Link>
             <span>/</span>
-            <a href="/en/books" className="hover:text-white transition-colors">Books</a>
+            <Link href="/en/books" className="hover:text-white transition-colors">Books</Link>
             <span>/</span>
             <span className="text-[#a78bfa]">{book.titleEn}</span>
           </nav>
