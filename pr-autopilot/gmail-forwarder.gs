@@ -1,46 +1,47 @@
 /**
- * PR Auto-Pilot · reenviador de Gmail
+ * PR Auto-Pilot - reenviador de Gmail  (sin acentos a proposito:
+ * el portapapeles los rompe al pegar en el editor de Apps Script)
  *
  * Lee los correos que tengan la etiqueta ETIQUETA_ENTRADA y los manda al
- * webhook del sitio. Usted decide qué entra a esa etiqueta con los filtros
- * de Gmail: así, agregar una plataforma nueva NO exige tocar este código.
+ * webhook del sitio. Usted decide que entra a esa etiqueta con los filtros
+ * de Gmail: asi, agregar una plataforma nueva NO exige tocar este codigo.
  *
- * ──────────────── INSTALACIÓN ────────────────
+ *  INSTALACION 
  *
  * 1. EN GMAIL, cree un filtro por cada plataforma:
- *      Buscar → De: community@connectively.us → Crear filtro
- *      → marcar "Aplicar la etiqueta" → Nueva etiqueta: PR-AutoPilot
- *      → marcar "Aplicar también a las conversaciones que coinciden"
+ *      Buscar  De: community@connectively.us  Crear filtro
+ *       marcar "Aplicar la etiqueta"  Nueva etiqueta: PR-AutoPilot
+ *       marcar "Aplicar tambien a las conversaciones que coinciden"
  *
- * 2. EN script.google.com → Nuevo proyecto → pegue todo esto.
+ * 2. EN script.google.com  Nuevo proyecto  pegue todo esto.
  *
- * 3. Configuración del proyecto → Propiedades de la secuencia de comandos:
+ * 3. Configuracion del proyecto  Propiedades de la secuencia de comandos:
  *      WEBHOOK_SECRET = <el valor de PR_AUTOPILOT_WEBHOOK_SECRET>
- *    (va aquí y NO en el código, para que no viaje en copias ni respaldos)
+ *    (va aqui y NO en el codigo, para que no viaje en copias ni respaldos)
  *
  * 4. Ejecute `probar()` una vez. Autorice los permisos que pida.
  *    Debe imprimir 200 y aparecer una consulta en su tablero.
  *
- * 5. Activadores (el reloj ⏰) → Añadir activador:
- *      función: revisarCorreos · origen: según tiempo · cada 5 minutos
+ * 5. Activadores (el reloj (reloj))  Anadir activador:
+ *      funcion: revisarCorreos - origen: segun tiempo - cada 5 minutos
  *
- * 6. Ejecute `diagnostico()` cuando quiera saber si está entrando trabajo.
+ * 6. Ejecute `diagnostico()` cuando quiera saber si esta entrando trabajo.
  */
 
 var CONFIG = {
   WEBHOOK_URL: "https://www.josuesolorzano.com/api/pr-autopilot/webhook",
   ETIQUETA_ENTRADA: "PR-AutoPilot",
   ETIQUETA_LISTO: "PR-AutoPilot-enviado",
-  USER_ID: "",            // opcional, sólo si hay varias personas usando el tablero
+  USER_ID: "",            // opcional, solo si hay varias personas usando el tablero
   MAX_POR_CORRIDA: 20,
   DIAS_ATRAS: 3
 };
 
-/** De qué plataforma viene, según quién lo manda. Verificado, no inventado. */
-// `verificado: true` = Josue confirmó la dirección con un correo real.
-// Los demás son suposiciones: NO se usan para buscar, sólo para etiquetar
-// de qué plataforma viene un correo que ya entró por la etiqueta de Gmail.
-// Cuando confirme uno, cámbielo a true y ya se busca solo.
+/** De que plataforma viene, segun quien lo manda. Verificado, no inventado. */
+// `verificado: true` = Josue confirmo la direccion con un correo real.
+// Los demas son suposiciones: NO se usan para buscar, solo para etiquetar
+// de que plataforma viene un correo que ya entro por la etiqueta de Gmail.
+// Cuando confirme uno, cambielo a true y ya se busca solo.
 var REMITENTES = [
   { patron: "connectively.us",   nombre: "Connectively",      verificado: true  },
   { patron: "helpareporter.com", nombre: "HARO/Featured",     verificado: false },
@@ -77,9 +78,9 @@ function revisarCorreos() {
   var listo = etiqueta_(CONFIG.ETIQUETA_LISTO);
 
   // Busca por etiqueta O por remitente conocido. Con cualquiera de las dos
-  // basta: si usted no creó el filtro de Gmail, los remitentes verificados
-  // igual entran. Y si mañana agrega una plataforma, le pone la etiqueta y
-  // funciona sin tocar este código.
+  // basta: si usted no creo el filtro de Gmail, los remitentes verificados
+  // igual entran. Y si manana agrega una plataforma, le pone la etiqueta y
+  // funciona sin tocar este codigo.
   var partes = ['label:"' + CONFIG.ETIQUETA_ENTRADA + '"'];
   for (var i = 0; i < REMITENTES.length; i++) {
     if (REMITENTES[i].verificado) partes.push("from:" + REMITENTES[i].patron);
@@ -117,23 +118,23 @@ function revisarCorreos() {
           enviados++;
         } else {
           okHilo = false; fallidos++;
-          Logger.log("Webhook respondió " + r.getResponseCode() + ": " + r.getContentText());
+          Logger.log("Webhook respondio " + r.getResponseCode() + ": " + r.getContentText());
         }
       } catch (e) {
         okHilo = false; fallidos++;
         Logger.log("Error de red: " + e);
       }
     }
-    // Sólo se marca como listo si TODO el hilo salió bien.
-    // Si algo falló, se reintenta en la próxima corrida.
+    // Solo se marca como listo si TODO el hilo salio bien.
+    // Si algo fallo, se reintenta en la proxima corrida.
     if (okHilo) hilos[h].addLabel(listo);
   }
 
-  Logger.log("Enviados: " + enviados + " · Fallidos: " + fallidos +
-             " · Hilos revisados: " + hilos.length);
+  Logger.log("Enviados: " + enviados + " - Fallidos: " + fallidos +
+             " - Hilos revisados: " + hilos.length);
 }
 
-/** Corra esto UNA vez a mano: autoriza permisos y comprueba la tubería. */
+/** Corra esto UNA vez a mano: autoriza permisos y comprueba la tuberia. */
 function probar() {
   var r = UrlFetchApp.fetch(CONFIG.WEBHOOK_URL, {
     method: "post",
@@ -141,22 +142,22 @@ function probar() {
     headers: { "x-webhook-secret": secreto_() },
     payload: JSON.stringify({
       plataforma: "prueba",
-      asunto: "Prueba de conexión del PR Auto-Pilot",
-      cuerpo: "Si esto aparece en el tablero, la tubería funciona de punta a punta."
+      asunto: "Prueba de conexion del PR Auto-Pilot",
+      cuerpo: "Si esto aparece en el tablero, la tuberia funciona de punta a punta."
     }),
     muteHttpExceptions: true
   });
-  Logger.log("HTTP " + r.getResponseCode() + " · " + r.getContentText());
+  Logger.log("HTTP " + r.getResponseCode() + " - " + r.getContentText());
   if (r.getResponseCode() !== 200) {
     Logger.log("Si dice 401, el WEBHOOK_SECRET no coincide con el del sitio.");
   }
 }
 
-/** ¿Está entrando trabajo? Corra esto cuando tenga la duda. */
+/** Esta entrando trabajo? Corra esto cuando tenga la duda. */
 function diagnostico() {
   var e = GmailApp.getUserLabelByName(CONFIG.ETIQUETA_ENTRADA);
   var l = GmailApp.getUserLabelByName(CONFIG.ETIQUETA_LISTO);
-  Logger.log("Etiqueta de entrada existe: " + (e ? "SÍ" : "NO — cree el filtro en Gmail"));
+  Logger.log("Etiqueta de entrada existe: " + (e ? "SI" : "NO - cree el filtro en Gmail"));
   if (e) {
     Logger.log("Correos con la etiqueta: " + GmailApp.search('label:"' + CONFIG.ETIQUETA_ENTRADA + '"').length);
   }
@@ -164,8 +165,8 @@ function diagnostico() {
   for (var i = 0; i < REMITENTES.length; i++) {
     if (!REMITENTES[i].verificado) continue;
     var n = GmailApp.search("from:" + REMITENTES[i].patron + " newer_than:30d").length;
-    Logger.log("Correos de " + REMITENTES[i].nombre + " (30 días): " + n);
+    Logger.log("Correos de " + REMITENTES[i].nombre + " (30 dias): " + n);
   }
   Logger.log("Secreto configurado: " +
-    (PropertiesService.getScriptProperties().getProperty("WEBHOOK_SECRET") ? "SÍ" : "NO"));
+    (PropertiesService.getScriptProperties().getProperty("WEBHOOK_SECRET") ? "SI" : "NO"));
 }
