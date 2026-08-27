@@ -40,7 +40,7 @@ export const metadata: Metadata = {
   },
   alternates: {
     canonical: `${siteConfig.url}/en`,
-    languages: { es: siteConfig.url, en: `${siteConfig.url}/en` },
+    languages: { es: siteConfig.url, en: `${siteConfig.url}/en`, "x-default": siteConfig.url },
   },
 };
 

@@ -6,14 +6,14 @@ import ServicesSection from "@/components/sections/ServicesSection";
 import Testimonials from "@/components/sections/Testimonials";
 import BookAuthority from "@/components/sections/BookAuthority";
 import ContactSection from "@/components/sections/ContactSection";
-import { siteConfig } from "@/lib/utils";
+import { siteConfig, alternatesCanonicas } from "@/lib/utils";
 import { faqSchema, professionalServiceSchema } from "@/lib/schema";
 
 export const metadata: Metadata = {
   title: { absolute: "Josue Solorzano | Sitios Web Premium, SEO y Optimización para IAs" },
   description:
     "Servicios digitales premium desde Costa Rica para clientes en USA, Europa y el mundo. Sitios web, primera página de Google, optimización para IAs y autoridad digital.",
-  alternates: { canonical: siteConfig.url },
+  alternates: alternatesCanonicas("es", "", "/en"),
 };
 
 const faqs = [

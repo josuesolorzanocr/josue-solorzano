@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     "Official press kit for Josué Solórzano — digital authority specialist from Costa Rica. Official bio, interview topics, published book and media contact.",
   alternates: {
     canonical: `${siteConfig.url}/en/press`,
-    languages: { es: `${siteConfig.url}/media-kit`, en: `${siteConfig.url}/en/press` },
+    languages: { es: `${siteConfig.url}/media-kit`, en: `${siteConfig.url}/en/press`, "x-default": `${siteConfig.url}/media-kit` },
   },
   robots: { index: true, follow: true },
 };

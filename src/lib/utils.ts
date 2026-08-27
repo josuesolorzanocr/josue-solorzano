@@ -35,3 +35,14 @@ export const siteConfig = {
   instagramHandle: "josuesolorzanor",
   facebookHandle: "josue.solorzanorojas",
 };
+
+
+/** Igual, pero fijando cuál de las dos es la canónica de esta página. */
+export function alternatesCanonicas(actual: "es" | "en", rutaEs: string, rutaEn: string) {
+  const es = `${siteConfig.url}${rutaEs}`;
+  const en = `${siteConfig.url}${rutaEn}`;
+  return {
+    canonical: actual === "es" ? es : en,
+    languages: { es, en, "x-default": es },
+  };
+}

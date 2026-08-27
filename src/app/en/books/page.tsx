@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   keywords: ["Define Your Authority", "Josué Solórzano book", "identity", "discipline", "personal authority", "Legacy Publishers"],
   alternates: {
     canonical: `${siteConfig.url}/en/books`,
-    languages: { es: `${siteConfig.url}/libros`, en: `${siteConfig.url}/en/books` },
+    languages: { es: `${siteConfig.url}/libros`, en: `${siteConfig.url}/en/books`, "x-default": `${siteConfig.url}/libros` },
   },
   openGraph: {
     title: "Define Your Authority — Josué Solórzano",

@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Clock } from "lucide-react";
 import { blogPosts } from "@/lib/data/blog-posts";
-import { siteConfig, formatDate } from "@/lib/utils";
+import { siteConfig, formatDate, alternatesCanonicas } from "@/lib/utils";
 import { webPageSchema } from "@/lib/schema";
 
 export const metadata: Metadata = {
@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   description:
     "Artículos de Josue Solorzano sobre sitios web premium, SEO, optimización para IAs, captura de leads y autoridad digital. Aprende a dominar internet.",
   keywords: ["blog marketing digital", "sitios web premium", "SEO para negocios", "optimización IA", "Josue Solorzano blog"],
-  alternates: { canonical: `${siteConfig.url}/blog` },
+  alternates: alternatesCanonicas("es", "/blog", "/en/blog"),
   openGraph: {
     title: "Blog | Josue Solorzano",
     description: "Estrategias digitales para que tu negocio domine internet: SEO, IA, sitios web y más.",
