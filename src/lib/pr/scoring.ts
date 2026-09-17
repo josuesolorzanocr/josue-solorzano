@@ -12,6 +12,13 @@ function anthropic(): Anthropic {
 
 const MODELO = "claude-sonnet-5";
 
+/**
+ * Tope alto a propósito. Con 1500 se truncaba la respuesta a medias y el JSON
+ * quedaba roto: el 2026-09-02 se perdió así una consulta con score 82.
+ * Un boletín con 6 consultas necesita 6 borradores.
+ */
+const MAX_TOKENS = 8000;
+
 /** Quién responde. Si esto no es cierto, el draft miente. Mantenerlo real. */
 const PERFIL = `
 Josué Solórzano — Costa Rica. Especialista en autoridad digital:
@@ -25,66 +32,79 @@ Idiomas: español e inglés.
 `.trim();
 
 export interface Evaluacion {
+  pregunta: string;
+  medio: string | null;
+  deadline: string | null;
   score: number;
   motivo: string;
   draft: string;
 }
 
-export async function evaluarQuery(input: {
+/**
+ * Evalúa UN correo que puede traer VARIAS consultas.
+ *
+ * HARO, Connectively y Source of Sources no mandan una consulta por correo:
+ * mandan boletines con varias, agrupadas por tema. Calificar el boletín entero
+ * como una sola cosa promedia lo bueno con lo malo — el 2026-09-05 una consulta
+ * de SEO perfecta quedó en 65 por venir junto a una de optometría.
+ */
+export async function evaluarCorreo(input: {
   plataforma: string;
   medio?: string | null;
   periodista?: string | null;
   asunto?: string | null;
   cuerpo: string;
-}): Promise<Evaluacion> {
+}): Promise<Evaluacion[]> {
   const prompt = `Sos el asistente de PR de esta persona:
 
 ${PERFIL}
 
-Llegó esta consulta de un periodista desde ${input.plataforma}:
+Llegó este correo de ${input.plataforma}. Asunto: ${input.asunto || "sin asunto"}
 
-Medio: ${input.medio || "no indicado"}
-Periodista: ${input.periodista || "no indicado"}
-Asunto: ${input.asunto || "no indicado"}
+IMPORTANTE: estos correos suelen ser BOLETINES con VARIAS consultas de
+periodistas, agrupadas por tema. Tu primer trabajo es SEPARARLAS.
 
 ---
-${input.cuerpo.slice(0, 6000)}
+${input.cuerpo.slice(0, 20000)}
 ---
 
-Hacé dos cosas:
+PASO 1 — Extraé cada consulta individual.
+Ignorá encabezados, pies, enlaces de "ver todas", publicidad y avisos de la
+plataforma. Si el correo no trae ninguna consulta real de un periodista,
+devolvé un arreglo vacío [].
 
-1. SCORE de 0 a 100: qué tan bien encaja esta consulta con la experiencia REAL de
-   Josué. 80-100 = es exactamente su tema. 50-79 = adyacente, se puede responder con
+PASO 2 — Para CADA consulta, por separado:
+
+a) SCORE de 0 a 100: qué tan bien encaja con la experiencia REAL de Josué.
+   80-100 = es exactamente su tema. 50-79 = adyacente, se puede responder con
    honestidad. 20-49 = lejano. 0-19 = no tiene nada que ver.
-   Castigá el score si responder exigiría inventar credenciales, cifras o experiencia
-   que el perfil no respalda.
+   Castigá el score si responder exigiría inventar credenciales, cifras o
+   experiencia que el perfil no respalda.
 
-2. DRAFT de respuesta al periodista, en el idioma de la consulta.
+b) DRAFT de respuesta al periodista, en el idioma de la consulta.
+   Si el score es menor a 40, poné el draft en "" (vacío) para no gastar trabajo.
    Reglas del draft, sin excepción:
    - Máximo 180 palabras.
-   - Empezá con la respuesta concreta a lo que preguntó, no con presentación.
-   - Solo afirmaciones que el perfil respalde. NUNCA inventes números de clientes,
-     años, premios, apariciones en medios ni tamaño de audiencia.
+   - Empezá con la respuesta concreta, no con presentación.
+   - Solo afirmaciones que el perfil respalde. NUNCA inventes números de
+     clientes, años, premios, apariciones en medios ni tamaño de audiencia.
    - Nada de superlativos ("líder", "el mejor", "reconocido mundialmente").
-   - Cerrá SIEMPRE con una línea de firma. TODA la firma va en el mismo idioma
-     que el borrador. Copiá uno de estos dos formatos según el idioma:
+   - Cerrá SIEMPRE con una línea de firma, en el MISMO idioma del borrador:
+     INGLÉS:  Josué Solórzano — digital authority and AI search visibility — https://josuesolorzano.com
+     ESPAÑOL: Josué Solórzano — autoridad digital y visibilidad en buscadores de IA — https://josuesolorzano.com
+     La dirección va literal. Prohibido "[website]" o cualquier rodeo.
 
-     Si el borrador está en INGLÉS:
-       Josué Solórzano — digital authority and AI search visibility — https://josuesolorzano.com
-     Si el borrador está en ESPAÑOL:
-       Josué Solórzano — autoridad digital y visibilidad en buscadores de IA — https://josuesolorzano.com
-
-     La dirección va literal y completa. Está prohibido escribir "[website]",
-     "website available on request" o cualquier otro rodeo: el dato lo tenés.
-   - Si el score es menor a 20, el draft debe ser una sola línea:
-     "No responder: fuera de su área."
-
-Devolvé SOLO un objeto JSON válido, sin texto alrededor y sin bloques de código:
-{"score": <número>, "motivo": "<una frase>", "draft": "<el texto>"}`;
+Devolvé SOLO un arreglo JSON válido, sin texto alrededor y sin bloques de código:
+[{"pregunta":"<la consulta, resumida en una o dos frases>",
+  "medio":"<publicación o null>",
+  "deadline":"<fecha límite tal como aparece, o null>",
+  "score":<número>,
+  "motivo":"<una frase>",
+  "draft":"<el texto o cadena vacía>"}]`;
 
   const r = await anthropic().messages.create({
     model: MODELO,
-    max_tokens: 1500,
+    max_tokens: MAX_TOKENS,
     messages: [{ role: "user", content: prompt }],
   });
 
@@ -94,20 +114,32 @@ Devolvé SOLO un objeto JSON válido, sin texto alrededor y sin bloques de códi
     .join("")
     .trim();
 
+  // Si el modelo se quedó sin tokens, es mejor saberlo que adivinar.
+  if (r.stop_reason === "max_tokens") {
+    throw new Error(
+      `La respuesta se truncó en ${MAX_TOKENS} tokens. El correo trae demasiadas ` +
+      `consultas; hay que subir MAX_TOKENS o partir el correo.`);
+  }
+
   const json = texto.replace(/^```(?:json)?\s*/i, "").replace(/```\s*$/, "").trim();
-  let parsed: Partial<Evaluacion>;
+  let parsed: unknown;
   try {
     parsed = JSON.parse(json);
   } catch {
-    const m = json.match(/\{[\s\S]*\}/);
-    if (!m) throw new Error("El modelo no devolvió JSON: " + texto.slice(0, 200));
+    const m = json.match(/\[[\s\S]*\]/);
+    if (!m) throw new Error("El modelo no devolvió JSON: " + texto.slice(0, 300));
     parsed = JSON.parse(m[0]);
   }
+  if (!Array.isArray(parsed)) {
+    throw new Error("Se esperaba un arreglo y llegó: " + typeof parsed);
+  }
 
-  const score = Math.max(0, Math.min(100, Math.round(Number(parsed.score) || 0)));
-  return {
-    score,
-    motivo: String(parsed.motivo || "").slice(0, 500),
-    draft: String(parsed.draft || "").slice(0, 8000),
-  };
+  return (parsed as Record<string, unknown>[]).map((p) => ({
+    pregunta: String(p.pregunta || "").slice(0, 2000),
+    medio: p.medio ? String(p.medio).slice(0, 200) : null,
+    deadline: p.deadline ? String(p.deadline).slice(0, 100) : null,
+    score: Math.max(0, Math.min(100, Math.round(Number(p.score) || 0))),
+    motivo: String(p.motivo || "").slice(0, 500),
+    draft: String(p.draft || "").slice(0, 8000),
+  })).filter((e) => e.pregunta);
 }

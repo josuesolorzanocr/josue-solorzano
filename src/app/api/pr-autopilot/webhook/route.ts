@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
 import { createHash, timingSafeEqual } from "crypto";
 import { prSupabase } from "@/lib/pr/supabase";
-import { evaluarQuery } from "@/lib/pr/scoring";
+import { evaluarCorreo } from "@/lib/pr/scoring";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+export const maxDuration = 120;
 
 /** Comparación de tiempo constante: no filtra el secreto por cuánto tarda. */
 function secretoValido(recibido: string | null): boolean {
@@ -14,6 +15,10 @@ function secretoValido(recibido: string | null): boolean {
   const b = Buffer.from(esperado);
   if (a.length !== b.length) return false;
   return timingSafeEqual(a, b);
+}
+
+function huella(...partes: string[]): string {
+  return createHash("sha256").update(partes.join("|")).digest("hex");
 }
 
 export async function POST(request: Request) {
@@ -31,7 +36,6 @@ export async function POST(request: Request) {
   const plataforma = String(body.plataforma || body.platform || "desconocida");
   const cuerpo = String(body.cuerpo || body.body || "").trim();
   const asunto = body.asunto ? String(body.asunto) : (body.subject ? String(body.subject) : null);
-  const medio = body.medio ? String(body.medio) : (body.outlet ? String(body.outlet) : null);
   const periodista = body.periodista ? String(body.periodista) : (body.reporter ? String(body.reporter) : null);
   const userId = body.user_id ? String(body.user_id) : null;
 
@@ -39,44 +43,77 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "cuerpo vacío" }, { status: 400 });
   }
 
-  // Huella para no procesar dos veces el mismo correo reenviado.
-  const emailHash = createHash("sha256")
-    .update(plataforma + "|" + (asunto || "") + "|" + cuerpo.slice(0, 2000))
-    .digest("hex");
-
   const sb = prSupabase();
 
-  const { data: yaExiste } = await sb
-    .from("pr_queries").select("id").eq("email_hash", emailHash).maybeSingle();
-  if (yaExiste) {
-    return NextResponse.json({ ok: true, duplicada: true, id: yaExiste.id });
+  // Si este correo exacto ya se procesó, no se vuelve a gastar API.
+  const huellaCorreo = huella("correo", plataforma, asunto || "", cuerpo.slice(0, 4000));
+  const { data: yaVisto } = await sb
+    .from("pr_queries").select("id").eq("email_hash", huellaCorreo).maybeSingle();
+  if (yaVisto) {
+    return NextResponse.json({ ok: true, duplicada: true, id: yaVisto.id });
   }
 
-  let score: number | null = null;
-  let motivo: string | null = null;
-  let draft: string | null = null;
+  // Estos correos son BOLETINES: traen varias consultas. Se separan y se
+  // califica cada una por su cuenta. Calificar el boletín entero promediaba
+  // lo bueno con lo malo (ver incidente del 2026-09-05).
+  let evaluaciones;
   try {
-    const ev = await evaluarQuery({ plataforma, medio, periodista, asunto, cuerpo });
-    score = ev.score; motivo = ev.motivo; draft = ev.draft;
+    evaluaciones = await evaluarCorreo({ plataforma, periodista, asunto, cuerpo });
   } catch (e) {
-    // Si el scoring falla, la query igual se guarda: se revisa a mano.
-    motivo = "scoring falló: " + (e instanceof Error ? e.message : String(e));
+    // Si el scoring falla, el correo NO se pierde: se guarda entero para
+    // revisarlo a mano. Fallar en silencio es peor que fallar sucio.
+    const { data, error } = await sb.from("pr_queries").insert({
+      user_id: userId, plataforma, periodista, asunto, cuerpo,
+      score: null,
+      score_motivo: "scoring falló: " + (e instanceof Error ? e.message : String(e)),
+      email_hash: huellaCorreo,
+    }).select("id").single();
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ ok: true, id: data.id, scoring: "falló", revisar_a_mano: true });
   }
 
-  const { data, error } = await sb.from("pr_queries").insert({
-    user_id: userId, plataforma, medio, periodista, asunto, cuerpo,
-    deadline: body.deadline ? String(body.deadline) : null,
-    score, score_motivo: motivo, draft, email_hash: emailHash,
-  }).select("id").single();
+  if (!evaluaciones.length) {
+    // Boletín sin consultas reales (sólo avisos de la plataforma). Se registra
+    // para no volver a gastar API con el mismo correo.
+    await sb.from("pr_queries").insert({
+      user_id: userId, plataforma, periodista, asunto,
+      cuerpo: cuerpo.slice(0, 2000),
+      score: 0, score_motivo: "el correo no traía ninguna consulta de periodista",
+      estado: "rechazada", email_hash: huellaCorreo,
+    });
+    return NextResponse.json({ ok: true, consultas: 0 });
+  }
 
+  const filas = evaluaciones.map((ev, i) => ({
+    user_id: userId,
+    plataforma,
+    medio: ev.medio,
+    periodista,
+    asunto: ev.pregunta.slice(0, 300),
+    cuerpo: ev.pregunta,
+    score: ev.score,
+    score_motivo: ev.motivo,
+    draft: ev.draft || null,
+    // La primera fila lleva la huella del correo (para deduplicar el correo);
+    // las demás llevan la suya propia, por consulta.
+    email_hash: i === 0 ? huellaCorreo : huella("consulta", plataforma, ev.pregunta),
+  }));
+
+  const { data, error } = await sb.from("pr_queries").insert(filas).select("id,score");
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
   const hoy = new Date().toISOString().slice(0, 10);
-  await sb.rpc("pr_stats_sumar", {
-    p_fecha: hoy, p_user: userId, p_score: score ?? 0,
-  }).then(() => {}, () => {}); // si la función no existe todavía, no truena el webhook
+  for (const f of filas) {
+    await sb.rpc("pr_stats_sumar", { p_fecha: hoy, p_user: userId, p_score: f.score })
+            .then(() => {}, () => {});
+  }
 
-  return NextResponse.json({ ok: true, id: data.id, score });
+  return NextResponse.json({
+    ok: true,
+    consultas: data.length,
+    scores: data.map((d) => d.score),
+    relevantes: data.filter((d) => (d.score ?? 0) >= 70).length,
+  });
 }
