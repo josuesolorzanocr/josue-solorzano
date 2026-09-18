@@ -24,8 +24,11 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "no autorizado" }, { status: 401 });
   }
 
-  const { id, texto, destinatario, accion } =
-    (await request.json()) as { id?: string; texto?: string; destinatario?: string; accion?: Accion };
+  const { id, texto, texto_es, destinatario, accion } = (await request.json()) as {
+    id?: string; texto?: string; texto_es?: string; destinatario?: string; accion?: Accion;
+  };
+  // Lo que Josué leyó y aprobó en español, cuando la respuesta sale en inglés.
+  const respuestaEs = String(texto_es || "").trim() || null;
   if (!id) return NextResponse.json({ error: "falta id" }, { status: 400 });
 
   const sb = prSupabase();
@@ -50,7 +53,9 @@ export async function POST(request: Request) {
 
   // Si el periodista dijo que no acepta IA, el sistema no deja mandar el
   // borrador de Claude tal cual. Es la diferencia entre ayudar y engañar.
-  if (q.sin_ia && cuerpo === String(q.draft || "").trim()) {
+  // Cuando Josué escribe en español, lo que se compara es SU español con la guía.
+  const guia = String(q.draft || "").trim();
+  if (q.sin_ia && (cuerpo === guia || respuestaEs === guia)) {
     return NextResponse.json({
       error: "Este periodista no acepta respuestas escritas con IA. Escríbala con sus palabras; el borrador es sólo una guía.",
     }, { status: 422 });
@@ -60,7 +65,7 @@ export async function POST(request: Request) {
   // qué se contestó, sin mandar correo.
   if (accion === "marcar") {
     await sb.from("pr_queries").update({
-      estado: "enviada", draft_editado: cuerpo, enviada_a: null,
+      estado: "enviada", draft_editado: cuerpo, respuesta_es: respuestaEs, enviada_a: null,
       aprobada_por: user!.id, aprobada_en: ahora, enviada_en: ahora,
     }).eq("id", id);
     return NextResponse.json({ ok: true, estado: "enviada", canal: "plataforma" });
@@ -93,7 +98,7 @@ export async function POST(request: Request) {
   }
 
   await sb.from("pr_queries").update({
-    estado: "enviada", draft_editado: cuerpo, enviada_a: para,
+    estado: "enviada", draft_editado: cuerpo, respuesta_es: respuestaEs, enviada_a: para,
     aprobada_por: user!.id, aprobada_en: ahora, enviada_en: ahora,
   }).eq("id", id);
 

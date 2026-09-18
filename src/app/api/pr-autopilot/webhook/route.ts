@@ -124,6 +124,7 @@ export async function POST(request: Request) {
     deadline: ev.deadline,
     responder_a: ev.responder_a,
     sin_ia: ev.sin_ia,
+    idioma: ev.idioma,
     score: ev.score,
     score_motivo: ev.motivo,
     draft: ev.draft || null,

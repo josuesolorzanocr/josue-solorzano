@@ -1,17 +1,5 @@
-import Anthropic from "@anthropic-ai/sdk";
 import type { Perfil } from "./perfil";
-
-/** Cliente por demanda: el build no debe depender de la llave. */
-let cliente: Anthropic | null = null;
-function anthropic(): Anthropic {
-  if (cliente) return cliente;
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) throw new Error("Falta ANTHROPIC_API_KEY.");
-  cliente = new Anthropic({ apiKey });
-  return cliente;
-}
-
-const MODELO = "claude-sonnet-5";
+import { anthropic, MODELO, textoDe } from "./claude";
 
 /**
  * Tope alto a propósito. Con 1500 se truncaba la respuesta a medias y el JSON
@@ -31,6 +19,8 @@ export interface Evaluacion {
   responder_a: string | null;
   /** El periodista dice que no acepta respuestas escritas con IA. */
   sin_ia: boolean;
+  /** Idioma en que escribió el periodista: la respuesta sale en éste. */
+  idioma: "es" | "en";
   score: number;
   motivo: string;
   draft: string;
@@ -122,6 +112,8 @@ PASO 2 — Para CADA consulta, por separado:
    - sin_ia: true si la consulta dice que NO acepta respuestas escritas con IA
      ("No AI Pitches Considered", "can't accept AI-written responses",
      "NO AI responses" y parecidos). Si no lo dice, false.
+   - idioma: "en" o "es", el idioma en que ESCRIBIÓ EL PERIODISTA la consulta
+     (no el de estas instrucciones).
 
 a) SCORE de 0 a 100: qué tan bien encaja con la experiencia REAL de esta persona.
    80-100 = es exactamente su tema. 50-79 = adyacente, se puede responder con
@@ -129,7 +121,9 @@ a) SCORE de 0 a 100: qué tan bien encaja con la experiencia REAL de esta person
    Castigá el score si responder exigiría inventar credenciales, cifras o
    experiencia que el perfil no respalda.
 
-b) DRAFT de respuesta al periodista, en el idioma de la consulta.
+b) DRAFT de respuesta al periodista, en el MISMO idioma en que él escribió
+   (casi siempre inglés). Estas instrucciones y el resumen van en español:
+   eso NO cambia el idioma del draft.
    Si el score es menor a 40, o si la fecha límite ya pasó, poné el draft en ""
    (vacío) para no gastar trabajo.
    Si sin_ia es true, NO escribas una respuesta lista para mandar: mandarle
@@ -143,6 +137,8 @@ b) DRAFT de respuesta al periodista, en el idioma de la consulta.
    - Solo afirmaciones que el perfil respalde. NUNCA inventes números de
      clientes, años, premios, apariciones en medios ni tamaño de audiencia.
    - Nada de superlativos ("líder", "el mejor", "reconocido mundialmente").
+   - No ofrezcas llamadas, entrevistas ni nada en un idioma que el perfil no
+     diga que la persona habla.
    - Cerrá SIEMPRE con esta línea de firma, copiada LITERAL, en el MISMO
      idioma del borrador:
      INGLÉS:  ${input.perfil.firma_en}
@@ -156,6 +152,7 @@ Devolvé SOLO un arreglo JSON válido, sin texto alrededor y sin bloques de cód
   "deadline":"<ISO 8601 con zona horaria, o null>",
   "responder_a":"<correo o enlace literal, o null>",
   "sin_ia":<true o false>,
+  "idioma":"<en o es>",
   "score":<número>,
   "motivo":"<una frase>",
   "draft":"<el texto o cadena vacía>"}]`;
@@ -166,11 +163,7 @@ Devolvé SOLO un arreglo JSON válido, sin texto alrededor y sin bloques de cód
     messages: [{ role: "user", content: prompt }],
   });
 
-  const texto = r.content
-    .filter((b): b is Anthropic.TextBlock => b.type === "text")
-    .map((b) => b.text)
-    .join("")
-    .trim();
+  const texto = textoDe(r);
 
   // Si el modelo se quedó sin tokens, es mejor saberlo que adivinar.
   if (r.stop_reason === "max_tokens") {
@@ -199,6 +192,7 @@ Devolvé SOLO un arreglo JSON válido, sin texto alrededor y sin bloques de cód
     deadline: fechaValida(p.deadline),
     responder_a: limpiarDestino(p.responder_a),
     sin_ia: p.sin_ia === true,
+    idioma: p.idioma === "es" ? "es" as const : "en" as const,
     score: Math.max(0, Math.min(100, Math.round(Number(p.score) || 0))),
     motivo: String(p.motivo || "").slice(0, 500),
     draft: String(p.draft || "").slice(0, 8000),
