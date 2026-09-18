@@ -3,7 +3,9 @@ import { redirect } from "next/navigation";
 import { sesionActual } from "@/lib/pr/auth";
 import { prSupabase, type PrQuery } from "@/lib/pr/supabase";
 import { vencimiento, type Vencimiento } from "@/lib/pr/fechas";
+import { historialPerfil } from "@/lib/pr/perfil";
 import PanelQueries from "./PanelQueries";
+import EditorPerfil from "./EditorPerfil";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: { absolute: "PR Auto-Pilot" }, robots: { index: false, follow: false } };
@@ -19,9 +21,15 @@ const VISTAS = {
   vencidas: "Vencidas",
   descartadas: "Descartadas",
 } as const;
-type Vista = keyof typeof VISTAS;
+type VistaConsultas = keyof typeof VISTAS;
+type Vista = VistaConsultas | "perfil";
 
-function filtro(vista: Vista, ahora: string): string {
+const FECHA_CR = new Intl.DateTimeFormat("es-CR", {
+  timeZone: "America/Costa_Rica", day: "numeric", month: "short", year: "numeric",
+  hour: "numeric", minute: "2-digit",
+});
+
+function filtro(vista: VistaConsultas, ahora: string): string {
   const aTiempo = `or(deadline.is.null,deadline.gt.${ahora})`;
   switch (vista) {
     case "responder":
@@ -42,16 +50,22 @@ export default async function PrAutopilotPage({
   if (!user) redirect("/admin/login");
 
   const { ver } = await searchParams;
-  const vista: Vista = ver && ver in VISTAS ? (ver as Vista) : "responder";
+  const vista: Vista = ver === "perfil" ? "perfil" : ver && ver in VISTAS ? (ver as VistaConsultas) : "responder";
   const ahora = new Date().toISOString();
   const sb = prSupabase();
 
-  let consulta = sb.from("pr_queries").select("*").or(filtro(vista, ahora));
-  consulta = vista === "enviadas"
-    ? consulta.order("enviada_en", { ascending: false })
-    : consulta.order("score", { ascending: false, nullsFirst: false })
-              .order("deadline", { ascending: true, nullsFirst: false });
-  const { data: queries } = await consulta.limit(100);
+  let queries: PrQuery[] = [];
+  if (vista !== "perfil") {
+    let consulta = sb.from("pr_queries").select("*").or(filtro(vista, ahora));
+    consulta = vista === "enviadas"
+      ? consulta.order("enviada_en", { ascending: false })
+      : consulta.order("score", { ascending: false, nullsFirst: false })
+                .order("deadline", { ascending: true, nullsFirst: false });
+    queries = ((await consulta.limit(100)).data || []) as PrQuery[];
+  }
+  const versiones = vista === "perfil" ? await historialPerfil(10) : [];
+  const fechasPerfil: Record<string, string> = {};
+  for (const v of versiones) fechasPerfil[v.id] = FECHA_CR.format(new Date(v.creado_en));
 
   // Los contadores salen de la tabla, no de una estadística aparte: la
   // tarjeta de "respuestas enviadas" leía un contador que nadie sumaba.
@@ -64,7 +78,7 @@ export default async function PrAutopilotPage({
     contar(filtro("descartadas", ahora)),
     contar("mencion_url.not.is.null"),
   ]);
-  const cuantas: Record<Vista, number> = {
+  const cuantas: Record<VistaConsultas, number> = {
     responder: nResponder, enviadas: nEnviadas, vencidas: nVencidas, descartadas: nDescartadas,
   };
 
@@ -73,9 +87,8 @@ export default async function PrAutopilotPage({
   const suma = (k: "recibidas" | "score_alto") =>
     (stats || []).reduce((a, s) => a + (Number(s[k]) || 0), 0);
 
-  const lista = (queries || []) as PrQuery[];
   const vencimientos: Record<string, Vencimiento | null> = {};
-  for (const q of lista) vencimientos[q.id] = vencimiento(q.deadline);
+  for (const q of queries) vencimientos[q.id] = vencimiento(q.deadline);
 
   const tarjetas = [
     { etq: "Recibidas (30 d)", n: suma("recibidas") },
@@ -107,7 +120,7 @@ export default async function PrAutopilotPage({
         </section>
 
         <nav className="flex flex-wrap gap-2 border-b border-neutral-800 pb-3">
-          {(Object.keys(VISTAS) as Vista[]).map((v) => (
+          {(Object.keys(VISTAS) as VistaConsultas[]).map((v) => (
             <Link
               key={v}
               href={`/admin/pr-autopilot?ver=${v}`}
@@ -118,14 +131,31 @@ export default async function PrAutopilotPage({
               {VISTAS[v]} <span className="tabular-nums opacity-70">{cuantas[v]}</span>
             </Link>
           ))}
+          <Link
+            href="/admin/pr-autopilot?ver=perfil"
+            className={`rounded-lg px-3 py-1.5 text-sm sm:ml-auto ${
+              vista === "perfil" ? "bg-white text-neutral-950" : "text-neutral-400 hover:bg-neutral-900"
+            }`}
+          >
+            Mi perfil
+          </Link>
         </nav>
 
-        <PanelQueries
-          queries={lista}
-          vencimientos={vencimientos}
-          vista={vista}
-          puedeAprobar={user.rol !== "viewer"}
-        />
+        {vista === "perfil" ? (
+          <EditorPerfil
+            vigente={versiones[0] ?? null}
+            historial={versiones}
+            fechas={fechasPerfil}
+            puedeEditar={user.rol !== "viewer"}
+          />
+        ) : (
+          <PanelQueries
+            queries={queries}
+            vencimientos={vencimientos}
+            vista={vista}
+            puedeAprobar={user.rol !== "viewer"}
+          />
+        )}
       </div>
     </main>
   );

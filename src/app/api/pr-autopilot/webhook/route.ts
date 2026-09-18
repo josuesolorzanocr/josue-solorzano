@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createHash, timingSafeEqual } from "crypto";
 import { prSupabase } from "@/lib/pr/supabase";
 import { evaluarCorreo } from "@/lib/pr/scoring";
+import { perfilVigente, type Perfil } from "@/lib/pr/perfil";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -76,8 +77,12 @@ export async function POST(request: Request) {
   // califica cada una por su cuenta. Calificar el boletín entero promediaba
   // lo bueno con lo malo (ver incidente del 2026-09-05).
   let evaluaciones;
+  let perfil: Perfil;
   try {
-    evaluaciones = await evaluarCorreo({ plataforma, periodista, asunto, cuerpo });
+    // El perfil se lee en cada correo: lo que el dueño guarde en «Mi perfil»
+    // cuenta desde la consulta siguiente, sin volver a publicar el sitio.
+    perfil = await perfilVigente();
+    evaluaciones = await evaluarCorreo({ plataforma, periodista, asunto, cuerpo, perfil });
   } catch (e) {
     // Si el scoring falla, el correo NO se pierde: se guarda entero para
     // revisarlo a mano. Fallar en silencio es peor que fallar sucio.
@@ -129,6 +134,9 @@ export async function POST(request: Request) {
     // Source of Sources a la vez, entra una sola vez.
     email_hash: huella("consulta", normal(ev.titulo), normal(ev.medio)),
     correo_hash: huellaCorreo,
+    // Con qué versión del perfil se calificó: si mañana cambia el perfil,
+    // se sabe por qué esta consulta sacó la nota que sacó.
+    perfil_id: perfil.id,
   })).filter((f) => !vistas.has(f.email_hash) && vistas.add(f.email_hash));
 
   // `email_hash` es único. Con un insert normal, UNA consulta repetida tumbaba
