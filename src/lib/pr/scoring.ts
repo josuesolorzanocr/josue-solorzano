@@ -32,12 +32,46 @@ Idiomas: español e inglés.
 `.trim();
 
 export interface Evaluacion {
+  /** Título de la consulta copiado literal del boletín: sirve de huella estable. */
+  titulo: string;
   pregunta: string;
   medio: string | null;
+  /** ISO 8601 con zona horaria, o null si no se pudo leer con certeza. */
   deadline: string | null;
+  /** Correo literal del boletín o URL de la plataforma. Nunca inventado. */
+  responder_a: string | null;
+  /** El periodista dice que no acepta respuestas escritas con IA. */
+  sin_ia: boolean;
   score: number;
   motivo: string;
   draft: string;
+}
+
+/**
+ * Lo que devuelve el modelo como "dónde contestar" pasa por aquí antes de
+ * guardarse. Un correo se deja tal cual. De una URL se guarda sólo origen y
+ * ruta: los parámetros son donde viajan las sesiones (Connectively manda
+ * enlaces que abren la cuenta sin contraseña). Si la ruta misma trae algo con
+ * forma de token, se deja sólo el sitio.
+ */
+export function limpiarDestino(v: unknown): string | null {
+  const s = typeof v === "string" ? v.trim() : "";
+  if (!s) return null;
+  if (/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(s)) return s.toLowerCase();
+  try {
+    const u = new URL(s);
+    if (u.protocol !== "https:" && u.protocol !== "http:") return null;
+    const conToken = u.pathname.split("/").some((p) => /^[A-Za-z0-9_-]{32,}$/.test(p));
+    return conToken ? u.origin : u.origin + u.pathname;
+  } catch {
+    return null;
+  }
+}
+
+function fechaValida(v: unknown): string | null {
+  if (typeof v !== "string" || !v.trim()) return null;
+  const t = Date.parse(v);
+  return Number.isNaN(t) ? null : new Date(t).toISOString();
 }
 
 /**
@@ -55,9 +89,12 @@ export async function evaluarCorreo(input: {
   asunto?: string | null;
   cuerpo: string;
 }): Promise<Evaluacion[]> {
+  const ahora = new Date().toISOString();
   const prompt = `Sos el asistente de PR de esta persona:
 
 ${PERFIL}
+
+Fecha y hora actual (UTC): ${ahora}
 
 Llegó este correo de ${input.plataforma}. Asunto: ${input.asunto || "sin asunto"}
 
@@ -75,6 +112,22 @@ devolvé un arreglo vacío [].
 
 PASO 2 — Para CADA consulta, por separado:
 
+0) DATOS PARA CONTESTAR. Copiados del correo, NUNCA inventados ni deducidos:
+   - titulo: el título o resumen de la consulta copiado LITERAL, en su idioma
+     original (en HARO y Source of Sources es la línea "Summary:").
+   - responder_a: el correo al que se contesta, copiado LITERAL (HARO trae
+     "Email: reply+...@helpareporter.com"; Source of Sources trae "EMAIL:").
+     Si la consulta no trae correo pero sí un enlace para contestar en la
+     plataforma (Qwoted, Connectively), poné ese enlace. Si no hay ninguno, null.
+   - deadline: la fecha límite convertida a ISO 8601 CON zona horaria, por
+     ejemplo "2026-09-21T19:00:00-04:00". "ET"/"Eastern" es la hora de Nueva
+     York: -04:00 de marzo a noviembre, -05:00 el resto del año. "PT"/"Pacific"
+     es -07:00 de marzo a noviembre, -08:00 el resto. Si falta el año, usá el
+     de la fecha actual. Si no hay fecha límite o no se entiende, null.
+   - sin_ia: true si la consulta dice que NO acepta respuestas escritas con IA
+     ("No AI Pitches Considered", "can't accept AI-written responses",
+     "NO AI responses" y parecidos). Si no lo dice, false.
+
 a) SCORE de 0 a 100: qué tan bien encaja con la experiencia REAL de Josué.
    80-100 = es exactamente su tema. 50-79 = adyacente, se puede responder con
    honestidad. 20-49 = lejano. 0-19 = no tiene nada que ver.
@@ -82,8 +135,14 @@ a) SCORE de 0 a 100: qué tan bien encaja con la experiencia REAL de Josué.
    experiencia que el perfil no respalda.
 
 b) DRAFT de respuesta al periodista, en el idioma de la consulta.
-   Si el score es menor a 40, poné el draft en "" (vacío) para no gastar trabajo.
-   Reglas del draft, sin excepción:
+   Si el score es menor a 40, o si la fecha límite ya pasó, poné el draft en ""
+   (vacío) para no gastar trabajo.
+   Si sin_ia es true, NO escribas una respuesta lista para mandar: mandarle
+   texto de IA a quien lo prohíbe es engañarlo. En su lugar, el draft es una
+   guía EN ESPAÑOL que empieza con "GUÍA — escríbala con sus palabras:" y
+   sigue con 3 a 5 viñetas de qué podría contar Josué con base en su perfil.
+   Sin firma.
+   Reglas del draft normal, sin excepción:
    - Máximo 180 palabras.
    - Empezá con la respuesta concreta, no con presentación.
    - Solo afirmaciones que el perfil respalde. NUNCA inventes números de
@@ -95,9 +154,12 @@ b) DRAFT de respuesta al periodista, en el idioma de la consulta.
      La dirección va literal. Prohibido "[website]" o cualquier rodeo.
 
 Devolvé SOLO un arreglo JSON válido, sin texto alrededor y sin bloques de código:
-[{"pregunta":"<la consulta, resumida en una o dos frases>",
+[{"titulo":"<título literal, idioma original>",
+  "pregunta":"<la consulta, resumida en español en una o dos frases>",
   "medio":"<publicación o null>",
-  "deadline":"<fecha límite tal como aparece, o null>",
+  "deadline":"<ISO 8601 con zona horaria, o null>",
+  "responder_a":"<correo o enlace literal, o null>",
+  "sin_ia":<true o false>,
   "score":<número>,
   "motivo":"<una frase>",
   "draft":"<el texto o cadena vacía>"}]`;
@@ -135,9 +197,12 @@ Devolvé SOLO un arreglo JSON válido, sin texto alrededor y sin bloques de cód
   }
 
   return (parsed as Record<string, unknown>[]).map((p) => ({
+    titulo: String(p.titulo || p.pregunta || "").slice(0, 500),
     pregunta: String(p.pregunta || "").slice(0, 2000),
     medio: p.medio ? String(p.medio).slice(0, 200) : null,
-    deadline: p.deadline ? String(p.deadline).slice(0, 100) : null,
+    deadline: fechaValida(p.deadline),
+    responder_a: limpiarDestino(p.responder_a),
+    sin_ia: p.sin_ia === true,
     score: Math.max(0, Math.min(100, Math.round(Number(p.score) || 0))),
     motivo: String(p.motivo || "").slice(0, 500),
     draft: String(p.draft || "").slice(0, 8000),
