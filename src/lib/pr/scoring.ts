@@ -1,4 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
+import type { Perfil } from "./perfil";
 
 /** Cliente por demanda: el build no debe depender de la llave. */
 let cliente: Anthropic | null = null;
@@ -18,18 +19,6 @@ const MODELO = "claude-sonnet-5";
  * Un boletín con 6 consultas necesita 6 borradores.
  */
 const MAX_TOKENS = 8000;
-
-/** Quién responde. Si esto no es cierto, el draft miente. Mantenerlo real. */
-const PERFIL = `
-Josué Solórzano — Costa Rica. Especialista en autoridad digital:
-posicionamiento en Google y en buscadores de IA (ChatGPT, Claude, Perplexity, Gemini).
-Trabaja con expertos, consultores y fundadores de servicios profesionales.
-Áreas: Schema.org y datos estructurados, robots.txt para crawlers de IA, SEO técnico,
-Wikidata, sitios premium en Next.js, captura de leads.
-Autor del libro "Define Tu Autoridad".
-Sitio web: https://josuesolorzano.com  (usalo tal cual, nunca como marcador)
-Idiomas: español e inglés.
-`.trim();
 
 export interface Evaluacion {
   /** Título de la consulta copiado literal del boletín: sirve de huella estable. */
@@ -88,11 +77,17 @@ export async function evaluarCorreo(input: {
   periodista?: string | null;
   asunto?: string | null;
   cuerpo: string;
+  /** Quién responde. Sale de la base (pestaña «Mi perfil»), nunca del código. */
+  perfil: Perfil;
 }): Promise<Evaluacion[]> {
   const ahora = new Date().toISOString();
-  const prompt = `Sos el asistente de PR de esta persona:
+  const prompt = `Sos el asistente de PR de esta persona. Este perfil es TODO lo que
+sabés de ella; lo que no esté aquí, tratalo como algo que no sabe o no hace:
 
-${PERFIL}
+---
+${input.perfil.texto}
+---
+Si el perfil trae un sitio web, usalo tal cual, nunca como marcador.
 
 Fecha y hora actual (UTC): ${ahora}
 
@@ -128,7 +123,7 @@ PASO 2 — Para CADA consulta, por separado:
      ("No AI Pitches Considered", "can't accept AI-written responses",
      "NO AI responses" y parecidos). Si no lo dice, false.
 
-a) SCORE de 0 a 100: qué tan bien encaja con la experiencia REAL de Josué.
+a) SCORE de 0 a 100: qué tan bien encaja con la experiencia REAL de esta persona.
    80-100 = es exactamente su tema. 50-79 = adyacente, se puede responder con
    honestidad. 20-49 = lejano. 0-19 = no tiene nada que ver.
    Castigá el score si responder exigiría inventar credenciales, cifras o
@@ -140,7 +135,7 @@ b) DRAFT de respuesta al periodista, en el idioma de la consulta.
    Si sin_ia es true, NO escribas una respuesta lista para mandar: mandarle
    texto de IA a quien lo prohíbe es engañarlo. En su lugar, el draft es una
    guía EN ESPAÑOL que empieza con "GUÍA — escríbala con sus palabras:" y
-   sigue con 3 a 5 viñetas de qué podría contar Josué con base en su perfil.
+   sigue con 3 a 5 viñetas de qué podría contar esta persona con base en su perfil.
    Sin firma.
    Reglas del draft normal, sin excepción:
    - Máximo 180 palabras.
@@ -148,10 +143,11 @@ b) DRAFT de respuesta al periodista, en el idioma de la consulta.
    - Solo afirmaciones que el perfil respalde. NUNCA inventes números de
      clientes, años, premios, apariciones en medios ni tamaño de audiencia.
    - Nada de superlativos ("líder", "el mejor", "reconocido mundialmente").
-   - Cerrá SIEMPRE con una línea de firma, en el MISMO idioma del borrador:
-     INGLÉS:  Josué Solórzano — digital authority and AI search visibility — https://josuesolorzano.com
-     ESPAÑOL: Josué Solórzano — autoridad digital y visibilidad en buscadores de IA — https://josuesolorzano.com
-     La dirección va literal. Prohibido "[website]" o cualquier rodeo.
+   - Cerrá SIEMPRE con esta línea de firma, copiada LITERAL, en el MISMO
+     idioma del borrador:
+     INGLÉS:  ${input.perfil.firma_en}
+     ESPAÑOL: ${input.perfil.firma_es}
+     Prohibido "[website]", "[nombre]" o cualquier rodeo.
 
 Devolvé SOLO un arreglo JSON válido, sin texto alrededor y sin bloques de código:
 [{"titulo":"<título literal, idioma original>",
