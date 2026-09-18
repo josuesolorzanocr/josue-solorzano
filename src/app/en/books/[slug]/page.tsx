@@ -45,7 +45,7 @@ export default async function BookEnPage({ params }: Props) {
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(bookSchema({ title: book.titleEn, description: book.descriptionEn, year: book.year, publishedAt: book.publishedAt, publisher: book.publisher, slug: book.slug })) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(bookSchema({ title: book.titleEn, description: book.descriptionEn, year: book.year, publishedAt: book.publishedAt, isbn: book.isbn, publisher: book.publisher, slug: book.slug })) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema({ title: book.titleEn, description: book.subtitleEn, url: `${siteConfig.url}/en/books/${book.slug}`, breadcrumbs })) }} />
 
       <section className="pt-32 pb-16">
@@ -68,7 +68,7 @@ export default async function BookEnPage({ params }: Props) {
                 </div>
               </div>
               <div className="mt-6 bg-[#111118] border border-[#1e1e2e] rounded-xl p-5 space-y-3">
-                {[{ label: "Year", value: book.year.toString() }, { label: "Pages", value: `${book.pages} pages` }, { label: "Publisher", value: book.publisher }].map((item) => (
+                {[{ label: "Year", value: book.year.toString() }, { label: "Pages", value: `${book.pages} pages` }, { label: "Publisher", value: book.publisher }, ...(book.isbn ? [{ label: "ISBN", value: book.isbn }] : [])].map((item) => (
                   <div key={item.label} className="flex justify-between items-center text-sm">
                     <span className="text-[#8888aa]">{item.label}</span>
                     <span className="text-white font-medium">{item.value}</span>
@@ -80,7 +80,7 @@ export default async function BookEnPage({ params }: Props) {
               </a>
             </div>
             <div className="lg:col-span-2">
-              <span className="text-[#a78bfa] text-xs font-semibold uppercase tracking-widest">Bestseller {book.year}</span>
+              <span className="text-[#a78bfa] text-xs font-semibold uppercase tracking-widest">Published {book.year}</span>
               <h1 className="text-4xl lg:text-5xl font-bold text-white mt-2 mb-2">{book.titleEn}</h1>
               <p className="text-[#8888aa] text-xl mb-6">{book.subtitleEn}</p>
               <div className="flex flex-wrap gap-2 mb-8">

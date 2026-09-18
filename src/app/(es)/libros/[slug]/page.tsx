@@ -46,7 +46,7 @@ export default async function LibroPage({ params }: Props) {
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(bookSchema({ title: book.title, description: book.description, year: book.year, publishedAt: book.publishedAt, publisher: book.publisher, slug: book.slug })) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(bookSchema({ title: book.title, description: book.description, year: book.year, publishedAt: book.publishedAt, isbn: book.isbn, publisher: book.publisher, slug: book.slug })) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema({ title: book.title, description: book.subtitle, url: `${siteConfig.url}/libros/${book.slug}`, breadcrumbs })) }} />
 
       <section className="pt-32 pb-16">
@@ -80,6 +80,7 @@ export default async function LibroPage({ params }: Props) {
                   { label: "Año", value: book.year.toString() },
                   { label: "Páginas", value: `${book.pages} páginas` },
                   { label: "Editorial", value: book.publisher },
+                  ...(book.isbn ? [{ label: "ISBN", value: book.isbn }] : []),
                 ].map((item) => (
                   <div key={item.label} className="flex justify-between items-center text-sm">
                     <span className="text-[#8888aa]">{item.label}</span>
@@ -101,7 +102,7 @@ export default async function LibroPage({ params }: Props) {
 
             {/* Book content */}
             <div className="lg:col-span-2">
-              <span className="text-[#a78bfa] text-xs font-semibold uppercase tracking-widest">Bestseller {book.year}</span>
+              <span className="text-[#a78bfa] text-xs font-semibold uppercase tracking-widest">Publicado en {book.year}</span>
               <h1 className="text-4xl lg:text-5xl font-bold text-white mt-2 mb-2">{book.title}</h1>
               <p className="text-[#8888aa] text-xl mb-6">{book.subtitle}</p>
 

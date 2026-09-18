@@ -46,7 +46,7 @@ I'd love to be a guest on [Podcast Name] — in Spanish, or through written Q&A 
 — How websites, schema, LinkedIn, PR and content work together
 — Why traditional SEO is no longer enough
 
-I'm the author of "Define Your Authority" (Amazon, 2026). In August 2026 I audited the websites of 95 professional-services firms in Costa Rica: 35 of the 75 that responded had no structured data at all.
+I'm the author of "Define Your Authority" (Amazon, 2026). I audited the websites of 95 professional-services firms in Costa Rica: 35 of the 75 that responded had no structured data at all.
 
 Happy to send a one-pager or answer your questions in writing.
 
@@ -195,7 +195,7 @@ export default function MediaKitPage() {
               <p className="text-[#ccccdd] leading-relaxed text-sm">
                 Josué Solórzano es especialista en autoridad digital y sistemas con IA, desde Costa Rica. Su trabajo: que expertos y empresas de servicios sean encontrables y creíbles en Google y en los buscadores de IA — ChatGPT, Claude, Perplexity y Gemini — y construir con inteligencia artificial los sistemas que les permiten operar con menos recursos.
                 <br /><br />
-                Dirige un negocio de una sola persona que funciona sobre sistemas que él mismo construyó con IA: un sistema de relaciones públicas que lee y califica consultas de periodistas cada cinco minutos, su sitio bilingüe con datos estructurados y entidad en Wikidata, y una base de conocimiento que se revisa sola. En agosto de 2026 auditó los sitios de 95 empresas de servicios profesionales de Costa Rica: 35 de los 75 que respondieron no tenían ningún dato estructurado. Con una formación marcada por disciplina operacional y ejecución bajo presión, aplica los mismos estándares de precisión al mundo digital. Es autor del libro &quot;Define Tu Autoridad: Despierta Tu Nueva Identidad&quot;, disponible en Amazon.
+                Dirige un negocio de una sola persona que funciona sobre sistemas que él mismo construyó con IA: un sistema de relaciones públicas que lee y califica consultas de periodistas cada cinco minutos, su sitio bilingüe con datos estructurados y entidad en Wikidata, y una base de conocimiento que se revisa sola. Auditó los sitios de 95 empresas de servicios profesionales de Costa Rica: 35 de los 75 que respondieron no tenían ningún dato estructurado. Con una formación marcada por disciplina operacional y ejecución bajo presión, aplica los mismos estándares de precisión al mundo digital. Es autor del libro &quot;Define Tu Autoridad: Despierta Tu Nueva Identidad&quot;, publicado por Legacy Publishers y disponible en Amazon.
               </p>
             </div>
 
