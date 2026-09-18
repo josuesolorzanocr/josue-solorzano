@@ -54,6 +54,8 @@ export interface PrQuery {
   idioma: "es" | "en" | null;
   draft_es: string | null;
   respuesta_es: string | null;
+  consulta_original: string | null;
+  checklist: { pide: string; cumple: boolean }[] | null;
   creado_en: string;
 }
 

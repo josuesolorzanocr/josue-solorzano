@@ -1,5 +1,8 @@
 import type { Perfil } from "./perfil";
 import { anthropic, MODELO, textoDe } from "./claude";
+import {
+  reglasDeRedaccion, REGLA_SIN_IA, checklistValido, parsearJson, type ItemChecklist,
+} from "./redaccion";
 
 /**
  * Tope alto a propósito. Con 1500 se truncaba la respuesta a medias y el JSON
@@ -24,6 +27,8 @@ export interface Evaluacion {
   score: number;
   motivo: string;
   draft: string;
+  /** Lo que pide el periodista y si el borrador lo cumple. Vacío si no hay borrador. */
+  checklist: ItemChecklist[];
 }
 
 /**
@@ -125,25 +130,10 @@ b) DRAFT de respuesta al periodista, en el MISMO idioma en que él escribió
    (casi siempre inglés). Estas instrucciones y el resumen van en español:
    eso NO cambia el idioma del draft.
    Si el score es menor a 40, o si la fecha límite ya pasó, poné el draft en ""
-   (vacío) para no gastar trabajo.
-   Si sin_ia es true, NO escribas una respuesta lista para mandar: mandarle
-   texto de IA a quien lo prohíbe es engañarlo. En su lugar, el draft es una
-   guía EN ESPAÑOL que empieza con "GUÍA — escríbala con sus palabras:" y
-   sigue con 3 a 5 viñetas de qué podría contar esta persona con base en su perfil.
-   Sin firma.
-   Reglas del draft normal, sin excepción:
-   - Máximo 180 palabras.
-   - Empezá con la respuesta concreta, no con presentación.
-   - Solo afirmaciones que el perfil respalde. NUNCA inventes números de
-     clientes, años, premios, apariciones en medios ni tamaño de audiencia.
-   - Nada de superlativos ("líder", "el mejor", "reconocido mundialmente").
-   - No ofrezcas llamadas, entrevistas ni nada en un idioma que el perfil no
-     diga que la persona habla.
-   - Cerrá SIEMPRE con esta línea de firma, copiada LITERAL, en el MISMO
-     idioma del borrador:
-     INGLÉS:  ${input.perfil.firma_en}
-     ESPAÑOL: ${input.perfil.firma_es}
-     Prohibido "[website]", "[nombre]" o cualquier rodeo.
+   (vacío) y el checklist en [] para no gastar trabajo.
+   ${REGLA_SIN_IA}
+   Para el draft normal:
+   ${reglasDeRedaccion(input.perfil)}
 
 Devolvé SOLO un arreglo JSON válido, sin texto alrededor y sin bloques de código:
 [{"titulo":"<título literal, idioma original>",
@@ -155,7 +145,8 @@ Devolvé SOLO un arreglo JSON válido, sin texto alrededor y sin bloques de cód
   "idioma":"<en o es>",
   "score":<número>,
   "motivo":"<una frase>",
-  "draft":"<el texto o cadena vacía>"}]`;
+  "draft":"<el texto o cadena vacía>",
+  "checklist":[{"pide":"<...>","cumple":<true o false>}]}]`;
 
   const r = await anthropic().messages.create({
     model: MODELO,
@@ -172,15 +163,7 @@ Devolvé SOLO un arreglo JSON válido, sin texto alrededor y sin bloques de cód
       `consultas; hay que subir MAX_TOKENS o partir el correo.`);
   }
 
-  const json = texto.replace(/^```(?:json)?\s*/i, "").replace(/```\s*$/, "").trim();
-  let parsed: unknown;
-  try {
-    parsed = JSON.parse(json);
-  } catch {
-    const m = json.match(/\[[\s\S]*\]/);
-    if (!m) throw new Error("El modelo no devolvió JSON: " + texto.slice(0, 300));
-    parsed = JSON.parse(m[0]);
-  }
+  const parsed = parsearJson(texto);
   if (!Array.isArray(parsed)) {
     throw new Error("Se esperaba un arreglo y llegó: " + typeof parsed);
   }
@@ -196,5 +179,6 @@ Devolvé SOLO un arreglo JSON válido, sin texto alrededor y sin bloques de cód
     score: Math.max(0, Math.min(100, Math.round(Number(p.score) || 0))),
     motivo: String(p.motivo || "").slice(0, 500),
     draft: String(p.draft || "").slice(0, 8000),
+    checklist: checklistValido(p.checklist),
   })).filter((e) => e.pregunta);
 }
