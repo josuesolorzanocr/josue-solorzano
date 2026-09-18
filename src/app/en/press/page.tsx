@@ -6,9 +6,9 @@ import { siteConfig } from "@/lib/utils";
 import { webPageSchema } from "@/lib/schema";
 
 export const metadata: Metadata = {
-  title: "Press Kit | Josué Solórzano | Digital Authority Specialist",
+  title: "Press Kit | Josué Solórzano | Digital Authority & AI Systems",
   description:
-    "Official press kit for Josué Solórzano — digital authority specialist from Costa Rica. Official bio, interview topics, published book and media contact.",
+    "Official press kit for Josué Solórzano — digital authority and AI systems specialist from Costa Rica. Official bio, interview topics, published book and media contact.",
   alternates: {
     canonical: `${siteConfig.url}/en/press`,
     languages: { es: `${siteConfig.url}/media-kit`, en: `${siteConfig.url}/en/press`, "x-default": `${siteConfig.url}/media-kit` },
@@ -20,13 +20,14 @@ const stats = [
   { label: "Authority Products", value: "3" },
   { label: "Response Time", value: "24h" },
   { label: "Book on Amazon", value: "1" },
-  { label: "Global Markets · USA · Europe · LATAM", value: "3" },
+  { label: "Own systems built with AI", value: "3" },
 ];
 
 const topics = [
   "Digital Authority and Personal Brand Positioning",
   "How to optimize your digital presence so Google and AI platforms better understand your authority",
-  "The Digital Authority System: 7 phases to build a world-class online presence",
+  "Digital authority in phases: from the website to AI search visibility",
+  "How a one-person business runs on systems built with AI",
   "Identity, Judgment and Personal Responsibility — The C.A.D. Method",
   "Online Visibility Strategies for the US and European Markets",
   "Why traditional SEO is no longer enough in the AI search era",
@@ -38,9 +39,9 @@ const pitchEmails = [
     subject: "Guest pitch: Josué Solórzano — Digital Authority & AI Search Expert",
     body: `Hi [Host Name],
 
-I'm Josué Solórzano, a digital authority specialist from Costa Rica helping experts, consultants, founders and service businesses build world-class online presence — so they become more visible, understood and trusted across Google, AI search and global markets.
+I'm Josué Solórzano, a digital authority and AI systems specialist from Costa Rica. I run a one-person business on systems I built with AI — including an automated PR system that reads and filters journalist queries every five minutes.
 
-I'd love to be a guest on [Podcast Name]. Here's what I can bring to your audience:
+I'd love to be a guest on [Podcast Name] — in Spanish, or through written Q&A in English. Here's what I can bring to your audience:
 
 🎯 Topic: "How AI Search Is Changing Digital Authority for Experts and Businesses"
 — Why many professionals are invisible to AI-powered search
@@ -48,9 +49,9 @@ I'd love to be a guest on [Podcast Name]. Here's what I can bring to your audien
 — How websites, schema, LinkedIn, PR and content work together
 — Why traditional SEO is no longer enough
 
-I'm the author of "Define Your Authority" (Amazon) and creator of the Digital Authority System — a 7-phase framework that positions brands as trusted references in their industry.
+I'm the author of "Define Your Authority" (Amazon, 2026). In August 2026 I audited the websites of 95 professional-services firms in Costa Rica: 35 of the 75 that responded had no structured data at all.
 
-Happy to send a one-pager or jump on a 15-min call.
+Happy to send a one-pager or answer your questions in writing.
 
 Best,
 Josué Solórzano
@@ -62,15 +63,16 @@ josuesolorzano.com | vjosue.3004@gmail.com
     subject: "Expert source: Digital authority and AI search strategies — Josué Solórzano",
     body: `Hi [Editor/Reporter Name],
 
-I'm Josué Solórzano, a digital authority specialist based in Costa Rica, working with clients in the US, Europe, and Latin America.
+I'm Josué Solórzano, a digital authority and AI systems specialist based in Costa Rica.
 
 I'm available as an expert source for stories on:
 • How professionals and businesses can improve their visibility in AI-powered search
 • The new rules of digital authority in the AI era
 • Why traditional SEO is no longer enough for brands competing globally
 • How schema, structured data, and entity signals shape AI understanding
+• How a one-person business runs on systems built with AI
 
-I can provide data, quotes, or a full interview at your convenience.
+I can provide original data, written quotes, or an interview in Spanish.
 
 Press kit and headshots: josuesolorzano.com/en/press
 Email: vjosue.3004@gmail.com
@@ -177,7 +179,7 @@ export default function PressEnPage() {
                 <h2 className="text-white font-bold text-lg">Short Bio (50 words)</h2>
               </div>
               <p className="text-[#ccccdd] leading-relaxed text-sm">
-                Josué Solórzano is a digital authority specialist from Costa Rica helping experts, consultants, founders and service businesses build world-class online presence. His work improves trust, visibility and conversion across Google, AI search and global markets. He is the author of &quot;Define Your Authority,&quot; available on Amazon.
+                Josué Solórzano is a digital authority and AI systems specialist from Costa Rica. He builds websites that rank on Google and in AI search, and business systems made with artificial intelligence — like the automated PR system his own business runs on. He is the author of &quot;Define Your Authority&quot; (Amazon, 2026).
               </p>
               <p className="mt-4 text-xs text-[#555566]">Select text and copy</p>
             </div>
@@ -189,9 +191,9 @@ export default function PressEnPage() {
                 <h2 className="text-white font-bold text-lg">Full Bio (150 words)</h2>
               </div>
               <p className="text-[#ccccdd] leading-relaxed text-sm">
-                Josué Solórzano is a digital authority specialist from Costa Rica working with clients in the US, Europe and Latin America. He is the creator of the Digital Authority System — a 7-phase framework designed to position brands as trusted references across Google, AI search and global markets, through premium website design, advanced SEO, AI optimization and digital PR.
+                Josué Solórzano is a digital authority and AI systems specialist from Costa Rica. His work: making experts and service businesses findable and credible on Google and in AI search — ChatGPT, Claude, Perplexity and Gemini — and building, with artificial intelligence, the systems that let them operate with fewer resources.
                 <br /><br />
-                With a background built on operational discipline and execution under pressure, Josué applies the same precision standard to every client project. He is the author of &quot;Define Your Authority: Awaken Your New Identity,&quot; published by Legacy Publishers and available on Amazon. He currently delivers projects for clients in the US, Europe and Latin America.
+                He runs a one-person business on systems he built himself with AI: a PR system that reads and scores journalist queries every five minutes, his bilingual website with structured data and a Wikidata entity, and a knowledge base that audits itself. In August 2026 he audited the websites of 95 professional-services firms in Costa Rica: 35 of the 75 that responded had no structured data at all. With a background built on operational discipline and execution under pressure, he applies the same precision standard to digital work. He is the author of &quot;Define Your Authority: Awaken Your New Identity,&quot; available on Amazon.
               </p>
             </div>
 
@@ -204,7 +206,7 @@ export default function PressEnPage() {
               <div className="space-y-3">
                 <div>
                   <div className="text-white font-bold">Define Your Authority</div>
-                  <div className="text-[#8888aa] text-sm">Awaken Your New Identity · Legacy Publishers · 2024</div>
+                  <div className="text-[#8888aa] text-sm">Awaken Your New Identity · Legacy Publishers · 2026</div>
                 </div>
                 <p className="text-[#ccccdd] text-sm leading-relaxed">
                   A book about identity, judgment and personal responsibility using the C.A.D. method — Clarity, Action and Discipline. Available on Amazon in print and digital.
@@ -230,11 +232,11 @@ export default function PressEnPage() {
               <ul className="space-y-3 text-sm text-[#ccccdd]">
                 {[
                   { label: "Location", value: "Costa Rica" },
-                  { label: "Languages", value: "Spanish · English" },
-                  { label: "Markets served", value: "USA · Europe · Latin America" },
+                  { label: "Languages", value: "Spanish · written answers in English" },
+                  { label: "Focus markets", value: "USA · Europe · Latin America" },
                   { label: "Website", value: "josuesolorzano.com" },
-                  { label: "Book", value: "Define Your Authority (Amazon)" },
-                  { label: "Specialty", value: "Digital Authority Systems" },
+                  { label: "Book", value: "Define Your Authority (Amazon, 2026)" },
+                  { label: "Specialty", value: "Digital authority & AI systems" },
                 ].map((fact) => (
                   <li key={fact.label} className="flex justify-between border-b border-[#1e1e2e] pb-2">
                     <span className="text-[#8888aa]">{fact.label}</span>

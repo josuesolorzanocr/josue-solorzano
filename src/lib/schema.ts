@@ -11,10 +11,10 @@ export function personSchema() {
     url: siteConfig.url,
     image: `${siteConfig.url}/images/josue-solorzano.jpg`,
     description: siteConfig.description,
-    jobTitle: "Especialista en Crecimiento Digital y Posicionamiento de Marcas",
+    jobTitle: "Especialista en autoridad digital y sistemas con IA",
     worksFor: {
       "@type": "Organization",
-      name: "Josue Solorzano Digital",
+      name: "Josué Solórzano Digital",
       url: siteConfig.url,
     },
     nationality: { "@type": "Country", name: "Costa Rica" },
@@ -44,16 +44,22 @@ export function personSchema() {
       "Marketing Digital",
       "Posicionamiento de Marcas",
       "Crecimiento Digital",
+      "Sistemas de negocio con inteligencia artificial",
+      "Automatización con IA",
+      "Relaciones públicas digitales",
+      "Datos estructurados (Schema.org)",
     ],
     hasOccupation: [
       {
         "@type": "Occupation",
-        name: "Especialista en Crecimiento Digital",
+        name: "Especialista en autoridad digital y sistemas con IA",
         occupationLocation: { "@type": "Country", name: "Costa Rica" },
-        description: "Diseña y construye estrategias digitales para posicionar marcas a nivel global.",
+        description: "Construye autoridad digital para expertos y empresas de servicios, y desarrolla sistemas de negocio con inteligencia artificial.",
       },
     ],
-    knowsLanguage: ["es", "en"],
+    // Sólo español: el sitio es bilingüe, él no (dicho por Josué el 2026-09-18).
+    // Responde por escrito en inglés con traducción; no se declara lo que no es.
+    knowsLanguage: ["es"],
     // interactionStatistic: se quitó el contador que declaraba 0 seguidores.
     // Volver a ponerlo SOLO con conteos reales por plataforma (DAB Fase 6).
   };
@@ -119,6 +125,7 @@ export function bookSchema(book: {
   title: string;
   description: string;
   year: number;
+  publishedAt?: string;
   publisher: string;
   slug: string;
 }) {
@@ -130,7 +137,8 @@ export function bookSchema(book: {
     numberOfPages: undefined,
     author: { "@id": `${siteConfig.url}/#person` },
     publisher: { "@type": "Organization", name: book.publisher },
-    datePublished: `${book.year}-01-01`,
+    // Fecha real de Amazon; antes se inventaba el 1 de enero.
+    datePublished: book.publishedAt ?? String(book.year),
     url: `${siteConfig.url}/libros/${book.slug}`,
     inLanguage: "es",
     genre: ["Negocios", "Liderazgo", "Emprendimiento"],
@@ -197,6 +205,7 @@ export function professionalServiceSchema() {
         { "@type": "Offer", itemOffered: { "@type": "Service", name: "Menciones en Medios", description: "Apariciones en medios digitales reconocidos del mundo." } },
         { "@type": "Offer", itemOffered: { "@type": "Service", name: "Perfiles Verificados", description: "HARO, LinkedIn, Wikidata y directorios de autoridad." } },
         { "@type": "Offer", itemOffered: { "@type": "Service", name: "Autoridad Digital", description: "Estrategia integral para construir y mantener autoridad online." } },
+        { "@type": "Offer", itemOffered: { "@type": "Service", name: "Sistemas a Medida con IA", description: "Automatizaciones, bases de datos, sistemas de conocimiento y centrales telefónicas construidos con inteligencia artificial." } },
       ],
     },
     contactPoint: {

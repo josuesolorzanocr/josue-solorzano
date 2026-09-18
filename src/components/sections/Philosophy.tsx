@@ -42,8 +42,8 @@ export default function Philosophy({ lang = "es" }: PhilosophyProps) {
           </h2>
           <p className="text-[#8888aa] leading-relaxed">
             {isEn
-              ? "After 15 years helping leaders and entrepreneurs, four pillars have proven to be universal constants of sustained impact."
-              : "Después de 15 años ayudando a líderes y emprendedores, cuatro pilares han demostrado ser constantes universales del impacto sostenido."}
+              ? "Four principles guide everything I build."
+              : "Cuatro principios guían todo lo que construyo."}
           </p>
         </motion.div>
 
