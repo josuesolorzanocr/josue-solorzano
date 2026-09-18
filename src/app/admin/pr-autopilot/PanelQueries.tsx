@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { PrQuery } from "@/lib/pr/supabase";
 import { esCorreo, type Vencimiento } from "@/lib/pr/fechas";
@@ -19,6 +19,11 @@ const VACIO: Record<string, string> = {
   descartadas: "No hay consultas descartadas.",
 };
 
+/** La respuesta sale en inglés salvo que el periodista haya escrito en español. */
+const saleEnIngles = (q: PrQuery) => q.idioma !== "es";
+
+const caja = "w-full rounded-lg bg-neutral-950 border border-neutral-800 px-3 py-2 text-sm";
+
 export default function PanelQueries({
   queries, vencimientos, vista, puedeAprobar,
 }: {
@@ -29,32 +34,92 @@ export default function PanelQueries({
 }) {
   const router = useRouter();
   const [abierta, setAbierta] = useState<string | null>(null);
+  const abiertaRef = useRef<string | null>(null);
+  /** Lo que se envía: en inglés, sólo existe después de "Preparar versión en inglés". */
   const [texto, setTexto] = useState("");
+  /** Lo que Josué lee y edita, en español. */
+  const [textoEs, setTextoEs] = useState("");
+  /** El inglés traducido de vuelta al español: para ver qué dice de verdad. */
+  const [vueltaEs, setVueltaEs] = useState("");
   const [destinatario, setDestinatario] = useState("");
   const [ocupado, setOcupado] = useState(false);
+  const [traduciendo, setTraduciendo] = useState("");
   const [error, setError] = useState("");
   const [copiado, setCopiado] = useState(false);
 
-  function abrir(q: PrQuery) {
-    if (abierta === q.id) { setAbierta(null); return; }
-    setAbierta(q.id);
-    setTexto(q.draft_editado || q.draft || "");
-    setDestinatario(esCorreo(q.responder_a) ? q.responder_a : "");
-    setError(""); setCopiado(false);
+  async function traducir(cuerpo: Record<string, string>) {
+    const r = await fetch("/api/pr-autopilot/traducir", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(cuerpo),
+    });
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.error || "No se pudo traducir.");
+    return d;
   }
 
-  async function actuar(id: string, accion: "enviar" | "marcar" | "rechazar") {
+  async function abrir(q: PrQuery) {
+    if (abierta === q.id) { setAbierta(null); abiertaRef.current = null; return; }
+    setAbierta(q.id); abiertaRef.current = q.id;
+    setDestinatario(esCorreo(q.responder_a) ? q.responder_a : "");
+    setError(""); setCopiado(false); setVueltaEs("");
+
+    if (!saleEnIngles(q)) {
+      setTexto(q.draft_editado || q.draft || ""); setTextoEs("");
+      return;
+    }
+    setTexto("");
+    setTextoEs(q.draft_es || "");
+    if (!q.draft_es && (q.draft_editado || q.draft)) {
+      setTraduciendo("Traduciendo el borrador al español…");
+      try {
+        const d = await traducir({ id: q.id, modo: "a_espanol" });
+        if (abiertaRef.current === q.id) setTextoEs(d.es || "");
+      } catch (e) {
+        if (abiertaRef.current === q.id) setError(e instanceof Error ? e.message : String(e));
+      } finally {
+        setTraduciendo("");
+      }
+    }
+  }
+
+  function editarEspanol(valor: string) {
+    setTextoEs(valor);
+    // El inglés preparado ya no corresponde a lo que dice el español.
+    if (texto) { setTexto(""); setVueltaEs(""); }
+  }
+
+  async function prepararIngles(id: string) {
+    setError(""); setCopiado(false);
+    setTraduciendo("Preparando la versión en inglés y revisándola…");
+    try {
+      const d = await traducir({ id, modo: "a_ingles", texto_es: textoEs });
+      setTexto(d.en || ""); setVueltaEs(d.vuelta_es || "");
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setTraduciendo("");
+    }
+  }
+
+  async function actuar(q: PrQuery, accion: "enviar" | "marcar" | "rechazar") {
     if (accion === "enviar" && !window.confirm(`¿Enviar la respuesta a ${destinatario}? No se puede deshacer.`)) return;
     setOcupado(true); setError("");
     try {
+      const ingles = saleEnIngles(q);
       const r = await fetch("/api/pr-autopilot/approve", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id, accion, texto, destinatario }),
+        body: JSON.stringify({
+          id: q.id, accion, destinatario,
+          texto: ingles ? (texto || textoEs) : texto,
+          texto_es: ingles ? textoEs : undefined,
+        }),
       });
       const d = await r.json();
       if (!r.ok) { setError(d.error || "Falló."); return; }
-      setAbierta(null); setTexto(""); setDestinatario("");
+      setAbierta(null); abiertaRef.current = null;
+      setTexto(""); setTextoEs(""); setVueltaEs(""); setDestinatario("");
       router.refresh();
     } finally {
       setOcupado(false);
@@ -80,6 +145,8 @@ export default function PanelQueries({
         const v = vencimientos[q.id];
         const porCorreo = esCorreo(q.responder_a);
         const enPlataforma = !!q.responder_a && !porCorreo;
+        const ingles = saleEnIngles(q);
+        const listo = !!texto.trim();
         return (
           <article key={q.id} className="rounded-xl border border-neutral-800 bg-neutral-900 p-4">
             <div className="flex items-start justify-between gap-3">
@@ -122,9 +189,20 @@ export default function PanelQueries({
             </div>
 
             {abierta === q.id && q.estado === "enviada" && (
-              <pre className="mt-4 whitespace-pre-wrap rounded bg-neutral-950 p-3 text-xs text-neutral-300">
-                {q.draft_editado || "(no quedó registrado el texto)"}
-              </pre>
+              <div className="mt-4 space-y-3">
+                {q.respuesta_es && (
+                  <div>
+                    <p className="mb-1 text-xs uppercase tracking-wide text-neutral-500">Lo que usted aprobó, en español</p>
+                    <pre className="whitespace-pre-wrap rounded bg-neutral-950 p-3 text-xs text-neutral-300">{q.respuesta_es}</pre>
+                  </div>
+                )}
+                <div>
+                  <p className="mb-1 text-xs uppercase tracking-wide text-neutral-500">Lo que salió</p>
+                  <pre className="whitespace-pre-wrap rounded bg-neutral-950 p-3 text-xs text-neutral-300">
+                    {q.draft_editado || "(no quedó registrado el texto)"}
+                  </pre>
+                </div>
+              </div>
             )}
 
             {abierta === q.id && q.estado === "pendiente" && (
@@ -145,12 +223,14 @@ export default function PanelQueries({
                     </p>
                   )}
                   {!q.responder_a && <p className="mt-1 text-amber-300">No se encontró el contacto. Búsquelo en el boletín original en Gmail.</p>}
+                  {ingles && <p className="mt-1 text-neutral-400">El periodista escribió en inglés: usted trabaja en español y la respuesta sale en inglés.</p>}
                 </div>
 
                 {q.sin_ia && (
                   <p className="rounded-lg bg-red-950 p-3 text-sm text-red-200">
                     Este periodista <strong>no acepta respuestas escritas con IA</strong>. Lo de abajo es
                     sólo una guía: escriba la respuesta con sus palabras y sus propios ejemplos.
+                    {ingles && " La traducción al inglés también la hace una IA: si quiere ser transparente, termine su texto con «Traducido del español»."}
                   </p>
                 )}
 
@@ -158,38 +238,73 @@ export default function PanelQueries({
                   <input
                     type="email" value={destinatario} placeholder="Correo del periodista"
                     onChange={(e) => setDestinatario(e.target.value)}
-                    className="w-full rounded-lg bg-neutral-950 border border-neutral-800 px-3 py-2 text-sm"
+                    className={caja}
                   />
                 )}
-                <textarea
-                  value={texto} rows={12} onChange={(e) => setTexto(e.target.value)}
-                  className="w-full rounded-lg bg-neutral-950 border border-neutral-800 px-3 py-2 text-sm"
-                />
+
+                {ingles ? (
+                  <>
+                    <label className="block text-xs uppercase tracking-wide text-neutral-500">Su respuesta, en español</label>
+                    <textarea
+                      value={textoEs} rows={12} onChange={(e) => editarEspanol(e.target.value)}
+                      disabled={!!traduciendo} className={caja}
+                    />
+                    {listo && (
+                      <div className="grid gap-3 md:grid-cols-2">
+                        <div>
+                          <p className="mb-1 text-xs uppercase tracking-wide text-neutral-500">Así sale en inglés (esto es lo que se envía)</p>
+                          <pre className="max-h-80 overflow-auto whitespace-pre-wrap rounded bg-neutral-950 p-3 text-xs text-neutral-300">{texto}</pre>
+                        </div>
+                        <div>
+                          <p className="mb-1 text-xs uppercase tracking-wide text-emerald-500">Lo que dice ese inglés, traducido de vuelta: revise que no falte ni sobre nada</p>
+                          <pre className="max-h-80 overflow-auto whitespace-pre-wrap rounded border border-emerald-900 bg-neutral-950 p-3 text-xs text-neutral-200">{vueltaEs}</pre>
+                        </div>
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <textarea value={texto} rows={12} onChange={(e) => setTexto(e.target.value)} className={caja} />
+                )}
+
+                {traduciendo && <p className="text-sm text-neutral-400">{traduciendo}</p>}
                 {error && <p className="text-sm text-red-400">{error}</p>}
+
                 <div className="flex flex-wrap gap-2">
-                  {!enPlataforma && (
+                  {ingles && !listo && (
                     <button
-                      disabled={ocupado || !esCorreo(destinatario) || !texto.trim()}
-                      onClick={() => actuar(q.id, "enviar")}
+                      disabled={!!traduciendo || !textoEs.trim()}
+                      onClick={() => prepararIngles(q.id)}
                       className="rounded-lg bg-white px-4 py-2 text-sm font-medium text-neutral-950 disabled:opacity-40"
                     >
-                      {ocupado ? "Enviando…" : "Aprobar y enviar"}
+                      Preparar versión en inglés
+                    </button>
+                  )}
+                  {!enPlataforma && (!ingles || listo) && (
+                    <button
+                      disabled={ocupado || !!traduciendo || !esCorreo(destinatario) || !listo}
+                      onClick={() => actuar(q, "enviar")}
+                      className="rounded-lg bg-white px-4 py-2 text-sm font-medium text-neutral-950 disabled:opacity-40"
+                    >
+                      {ocupado ? "Enviando…" : ingles ? "Aprobar y enviar en inglés" : "Aprobar y enviar"}
+                    </button>
+                  )}
+                  {(!ingles || listo) && (
+                    <button
+                      disabled={!listo} onClick={copiar}
+                      className="rounded-lg border border-neutral-700 px-4 py-2 text-sm disabled:opacity-40"
+                    >
+                      {copiado ? "Copiado ✓" : ingles ? "Copiar el inglés" : "Copiar texto"}
                     </button>
                   )}
                   <button
-                    disabled={!texto.trim()} onClick={copiar}
-                    className="rounded-lg border border-neutral-700 px-4 py-2 text-sm disabled:opacity-40"
-                  >
-                    {copiado ? "Copiado ✓" : "Copiar texto"}
-                  </button>
-                  <button
-                    disabled={ocupado || !texto.trim()} onClick={() => actuar(q.id, "marcar")}
+                    disabled={ocupado || !!traduciendo || !(texto.trim() || textoEs.trim())}
+                    onClick={() => actuar(q, "marcar")}
                     className="rounded-lg border border-neutral-700 px-4 py-2 text-sm disabled:opacity-40"
                   >
                     Ya la contesté por otro lado
                   </button>
                   <button
-                    disabled={ocupado} onClick={() => actuar(q.id, "rechazar")}
+                    disabled={ocupado} onClick={() => actuar(q, "rechazar")}
                     className="rounded-lg border border-neutral-800 px-4 py-2 text-sm text-neutral-400 disabled:opacity-40"
                   >
                     Descartar

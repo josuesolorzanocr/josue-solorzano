@@ -51,6 +51,9 @@ export interface PrQuery {
   responder_a: string | null;
   sin_ia: boolean;
   enviada_a: string | null;
+  idioma: "es" | "en" | null;
+  draft_es: string | null;
+  respuesta_es: string | null;
   creado_en: string;
 }
 
