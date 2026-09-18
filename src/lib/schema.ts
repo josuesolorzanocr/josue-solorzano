@@ -126,6 +126,7 @@ export function bookSchema(book: {
   description: string;
   year: number;
   publishedAt?: string;
+  isbn?: string;
   publisher: string;
   slug: string;
 }) {
@@ -139,6 +140,7 @@ export function bookSchema(book: {
     publisher: { "@type": "Organization", name: book.publisher },
     // Fecha real de Amazon; antes se inventaba el 1 de enero.
     datePublished: book.publishedAt ?? String(book.year),
+    isbn: book.isbn,
     url: `${siteConfig.url}/libros/${book.slug}`,
     inLanguage: "es",
     genre: ["Negocios", "Liderazgo", "Emprendimiento"],

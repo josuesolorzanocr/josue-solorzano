@@ -32,7 +32,7 @@ export default function LibrosPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(
-            bookSchema({ title: book.title, description: book.description, year: book.year, publishedAt: book.publishedAt, publisher: book.publisher, slug: book.slug })
+            bookSchema({ title: book.title, description: book.description, year: book.year, publishedAt: book.publishedAt, isbn: book.isbn, publisher: book.publisher, slug: book.slug })
           ),
         }}
       />

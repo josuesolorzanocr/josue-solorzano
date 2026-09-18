@@ -49,7 +49,7 @@ I'd love to be a guest on [Podcast Name] — in Spanish, or through written Q&A 
 — How websites, schema, LinkedIn, PR and content work together
 — Why traditional SEO is no longer enough
 
-I'm the author of "Define Your Authority" (Amazon, 2026). In August 2026 I audited the websites of 95 professional-services firms in Costa Rica: 35 of the 75 that responded had no structured data at all.
+I'm the author of "Define Your Authority" (Amazon, 2026). I audited the websites of 95 professional-services firms in Costa Rica: 35 of the 75 that responded had no structured data at all.
 
 Happy to send a one-pager or answer your questions in writing.
 
@@ -193,7 +193,7 @@ export default function PressEnPage() {
               <p className="text-[#ccccdd] leading-relaxed text-sm">
                 Josué Solórzano is a digital authority and AI systems specialist from Costa Rica. His work: making experts and service businesses findable and credible on Google and in AI search — ChatGPT, Claude, Perplexity and Gemini — and building, with artificial intelligence, the systems that let them operate with fewer resources.
                 <br /><br />
-                He runs a one-person business on systems he built himself with AI: a PR system that reads and scores journalist queries every five minutes, his bilingual website with structured data and a Wikidata entity, and a knowledge base that audits itself. In August 2026 he audited the websites of 95 professional-services firms in Costa Rica: 35 of the 75 that responded had no structured data at all. With a background built on operational discipline and execution under pressure, he applies the same precision standard to digital work. He is the author of &quot;Define Your Authority: Awaken Your New Identity,&quot; available on Amazon.
+                He runs a one-person business on systems he built himself with AI: a PR system that reads and scores journalist queries every five minutes, his bilingual website with structured data and a Wikidata entity, and a knowledge base that audits itself. He audited the websites of 95 professional-services firms in Costa Rica: 35 of the 75 that responded had no structured data at all. With a background built on operational discipline and execution under pressure, he applies the same precision standard to digital work. He is the author of &quot;Define Your Authority: Awaken Your New Identity,&quot; published by Legacy Publishers and available on Amazon.
               </p>
             </div>
 

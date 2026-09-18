@@ -14,6 +14,8 @@ export interface Book {
   year: number;
   /** Fecha de publicación según Amazon (ISO). */
   publishedAt?: string;
+  /** ISBN-13 real, según Amazon. */
+  isbn?: string;
   pages: number;
   publisher: string;
   amazonUrl: string;
@@ -42,16 +44,18 @@ export const books: Book[] = [
     // Amazon: 23 de mayo de 2026 (verificado el 2026-09-18). Decía 2024.
     year: 2026,
     publishedAt: "2026-05-23",
+    // El de agosto era un marcador falso (978-XXX…). Éste es el de Amazon.
+    isbn: "979-8198250291",
     pages: 200,
     publisher: "Legacy Publishers",
     amazonUrl: "https://a.co/d/0c5Ttyh8",
     testimonial: {
       quote: "Un libro serio para quien está listo a dejar de vivir en automático. Josué escribe con verdad, criterio y autoridad sobre la decisión más importante: despertar.",
-      author: "Spenser Hoffmann",
+      author: "Spencer Hoffmann",
     },
     testimonialEn: {
       quote: "A serious book for those ready to stop living on autopilot. Josué writes with truth, judgment and authority about the most important decision: waking up.",
-      author: "Spenser Hoffmann",
+      author: "Spencer Hoffmann",
     },
     tags: ["identidad", "autoridad", "disciplina", "desarrollo personal", "liderazgo"],
     tagsEn: ["identity", "authority", "discipline", "personal development", "leadership"],
