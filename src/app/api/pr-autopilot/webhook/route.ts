@@ -3,6 +3,7 @@ import { createHash, timingSafeEqual } from "crypto";
 import { prSupabase } from "@/lib/pr/supabase";
 import { evaluarCorreo } from "@/lib/pr/scoring";
 import { perfilVigente, type Perfil } from "@/lib/pr/perfil";
+import { bloqueDeConsulta } from "@/lib/pr/boletin";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -128,6 +129,9 @@ export async function POST(request: Request) {
     score: ev.score,
     score_motivo: ev.motivo,
     draft: ev.draft || null,
+    checklist: ev.checklist.length ? ev.checklist : null,
+    // El texto literal de la consulta: permite rehacer el borrador sin Gmail.
+    consulta_original: bloqueDeConsulta(cuerpo, ev.titulo),
     estado: ev.deadline && Date.parse(ev.deadline) <= ahora ? "vencida" : "pendiente",
     // La huella sale del título LITERAL y del medio, no de la plataforma ni
     // del resumen de Claude (que cambia de palabras cada vez). Así la misma

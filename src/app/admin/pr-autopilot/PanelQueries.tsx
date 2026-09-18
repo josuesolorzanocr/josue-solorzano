@@ -45,7 +45,10 @@ export default function PanelQueries({
   const [ocupado, setOcupado] = useState(false);
   const [traduciendo, setTraduciendo] = useState("");
   const [error, setError] = useState("");
+  const [aviso, setAviso] = useState("");
   const [copiado, setCopiado] = useState(false);
+  /** Checklist recién rehecho, antes de que el servidor refresque la lista. */
+  const [checklists, setChecklists] = useState<Record<string, PrQuery["checklist"]>>({});
 
   async function traducir(cuerpo: Record<string, string>) {
     const r = await fetch("/api/pr-autopilot/traducir", {
@@ -62,7 +65,7 @@ export default function PanelQueries({
     if (abierta === q.id) { setAbierta(null); abiertaRef.current = null; return; }
     setAbierta(q.id); abiertaRef.current = q.id;
     setDestinatario(esCorreo(q.responder_a) ? q.responder_a : "");
-    setError(""); setCopiado(false); setVueltaEs("");
+    setError(""); setAviso(""); setCopiado(false); setVueltaEs("");
 
     if (!saleEnIngles(q)) {
       setTexto(q.draft_editado || q.draft || ""); setTextoEs("");
@@ -70,16 +73,48 @@ export default function PanelQueries({
     }
     setTexto("");
     setTextoEs(q.draft_es || "");
-    if (!q.draft_es && (q.draft_editado || q.draft)) {
-      setTraduciendo("Traduciendo el borrador al español…");
-      try {
-        const d = await traducir({ id: q.id, modo: "a_espanol" });
-        if (abiertaRef.current === q.id) setTextoEs(d.es || "");
-      } catch (e) {
-        if (abiertaRef.current === q.id) setError(e instanceof Error ? e.message : String(e));
-      } finally {
+    if (!q.draft_es && (q.draft_editado || q.draft)) await cargarEspanol(q.id);
+  }
+
+  async function cargarEspanol(id: string) {
+    setTraduciendo("Traduciendo el borrador al español…");
+    try {
+      const d = await traducir({ id, modo: "a_espanol" });
+      if (abiertaRef.current === id) setTextoEs(d.es || "");
+    } catch (e) {
+      if (abiertaRef.current === id) setError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setTraduciendo("");
+    }
+  }
+
+  async function rehacer(q: PrQuery) {
+    if (!window.confirm("Esto escribe un borrador nuevo con su perfil actual y reemplaza el que hay. ¿Seguir?")) return;
+    setError(""); setAviso(""); setCopiado(false);
+    setTraduciendo("Escribiendo un borrador nuevo con su perfil actual…");
+    try {
+      const r = await fetch("/api/pr-autopilot/redactar", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: q.id }),
+      });
+      const d = await r.json();
+      if (!r.ok) throw new Error(d.error || "No se pudo rehacer.");
+      setChecklists((c) => ({ ...c, [q.id]: d.checklist }));
+      if (d.aviso) setAviso(d.aviso);
+      setTexto(""); setVueltaEs("");
+      if (saleEnIngles(q)) {
+        setTextoEs("");
         setTraduciendo("");
+        await cargarEspanol(q.id);
+      } else {
+        setTexto(d.draft || "");
       }
+      router.refresh();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setTraduciendo("");
     }
   }
 
@@ -226,6 +261,36 @@ export default function PanelQueries({
                   {ingles && <p className="mt-1 text-neutral-400">El periodista escribió en inglés: usted trabaja en español y la respuesta sale en inglés.</p>}
                 </div>
 
+                {q.consulta_original && (
+                  <details className="rounded-lg border border-neutral-800 p-3 text-sm">
+                    <summary className="cursor-pointer text-neutral-300">Ver la consulta original, tal como la escribió el periodista</summary>
+                    <pre className="mt-2 max-h-72 overflow-auto whitespace-pre-wrap text-xs text-neutral-400">{q.consulta_original}</pre>
+                  </details>
+                )}
+
+                {(() => {
+                  const lista = checklists[q.id] ?? q.checklist;
+                  if (!lista?.length) return null;
+                  const faltan = lista.filter((i) => !i.cumple).length;
+                  return (
+                    <div className="rounded-lg border border-neutral-800 p-3 text-sm">
+                      <p className="text-xs uppercase tracking-wide text-neutral-500">Lo que pide el periodista</p>
+                      <ul className="mt-2 space-y-1">
+                        {lista.map((i, n) => (
+                          <li key={n} className={i.cumple ? "text-neutral-300" : "text-amber-300"}>
+                            {i.cumple ? "✓" : "✗"} {i.pide}
+                          </li>
+                        ))}
+                      </ul>
+                      {faltan > 0 && (
+                        <p className="mt-2 text-xs text-neutral-500">
+                          Lo marcado con ✗ no está en el borrador porque su perfil no lo tiene. Agréguelo usted si lo tiene, o déjelo fuera: nunca se inventa.
+                        </p>
+                      )}
+                    </div>
+                  );
+                })()}
+
                 {q.sin_ia && (
                   <p className="rounded-lg bg-red-950 p-3 text-sm text-red-200">
                     Este periodista <strong>no acepta respuestas escritas con IA</strong>. Lo de abajo es
@@ -267,6 +332,7 @@ export default function PanelQueries({
                 )}
 
                 {traduciendo && <p className="text-sm text-neutral-400">{traduciendo}</p>}
+                {aviso && <p className="text-sm text-amber-300">{aviso}</p>}
                 {error && <p className="text-sm text-red-400">{error}</p>}
 
                 <div className="flex flex-wrap gap-2">
@@ -302,6 +368,12 @@ export default function PanelQueries({
                     className="rounded-lg border border-neutral-700 px-4 py-2 text-sm disabled:opacity-40"
                   >
                     Ya la contesté por otro lado
+                  </button>
+                  <button
+                    disabled={ocupado || !!traduciendo} onClick={() => rehacer(q)}
+                    className="rounded-lg border border-neutral-700 px-4 py-2 text-sm disabled:opacity-40"
+                  >
+                    Rehacer borrador con mi perfil actual
                   </button>
                   <button
                     disabled={ocupado} onClick={() => actuar(q, "rechazar")}
