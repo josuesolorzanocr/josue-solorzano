@@ -6,7 +6,7 @@ import { siteConfig } from "@/lib/utils";
 import { webPageSchema } from "@/lib/schema";
 
 export const metadata: Metadata = {
-  title: "Press Kit | Josué Solórzano | Digital Authority & AI Systems",
+  title: { absolute: "Press Kit | Josué Solórzano | Digital Authority & AI Systems" },
   description:
     "Official press kit for Josué Solórzano — digital authority and AI systems specialist from Costa Rica. Official bio, interview topics, published book and media contact.",
   alternates: {
