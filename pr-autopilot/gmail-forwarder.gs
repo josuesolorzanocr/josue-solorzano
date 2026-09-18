@@ -33,8 +33,13 @@ var CONFIG = {
   ETIQUETA_ENTRADA: "PR-AutoPilot",
   ETIQUETA_LISTO: "PR-AutoPilot-enviado",
   USER_ID: "",            // opcional, solo si hay varias personas usando el tablero
-  MAX_POR_CORRIDA: 20,
-  DIAS_ATRAS: 3
+  MAX_POR_CORRIDA: 10,
+  DIAS_ATRAS: 3,
+  // Google corta cualquier corrida a los 360 s. Cada llamada al webhook puede
+  // tardar hasta 120 s (maxDuration del sitio). Pasados 200 s no se empieza
+  // otra: 200 + 120 = 320, siempre adentro del limite. Lo que no alcance
+  // queda para la corrida siguiente, 5 minutos despues.
+  PRESUPUESTO_MS: 200 * 1000
 };
 
 /** De que plataforma viene, segun quien lo manda. Verificado, no inventado. */
@@ -76,6 +81,22 @@ function plataformaDe_(remitente) {
 }
 
 function revisarCorreos() {
+  // Si la corrida anterior sigue viva, esta no arranca. Sin esto, dos
+  // corridas mandan el mismo correo a la vez (paso el 2026-09-17).
+  var candado = LockService.getScriptLock();
+  if (!candado.tryLock(0)) {
+    Logger.log("Otra corrida sigue trabajando; esta se salta.");
+    return;
+  }
+  try {
+    revisarCorreos_();
+  } finally {
+    candado.releaseLock();
+  }
+}
+
+function revisarCorreos_() {
+  var inicio = Date.now();
   var entrada = etiqueta_(CONFIG.ETIQUETA_ENTRADA);
   var listo = etiqueta_(CONFIG.ETIQUETA_LISTO);
 
@@ -96,14 +117,20 @@ function revisarCorreos() {
           ' newer_than:' + CONFIG.DIAS_ATRAS + 'd';
 
   var hilos = GmailApp.search(q, 0, CONFIG.MAX_POR_CORRIDA);
-  var enviados = 0, fallidos = 0;
+  var enviados = 0, fallidos = 0, pendientes = 0;
 
   for (var h = 0; h < hilos.length; h++) {
     var mensajes = hilos[h].getMessages();
     var okHilo = true;
 
     for (var m = 0; m < mensajes.length; m++) {
-      if (enviados >= CONFIG.MAX_POR_CORRIDA) break;
+      if (enviados + fallidos >= CONFIG.MAX_POR_CORRIDA ||
+          Date.now() - inicio > CONFIG.PRESUPUESTO_MS) {
+        // Se corta aqui, pero el hilo NO se marca: le faltan mensajes.
+        okHilo = false;
+        pendientes = hilos.length - h;
+        break;
+      }
       var msg = mensajes[m];
       var carga = {
         plataforma: plataformaDe_(msg.getFrom()),
@@ -132,12 +159,16 @@ function revisarCorreos() {
       }
     }
     // Solo se marca como listo si TODO el hilo salio bien.
-    // Si algo fallo, se reintenta en la proxima corrida.
+    // Si algo fallo o no alcanzo el tiempo, se reintenta en la proxima
+    // corrida; los mensajes que ya entraron no se cobran dos veces porque
+    // el sitio reconoce el correo repetido antes de llamar a Claude.
     if (okHilo) hilos[h].addLabel(listo);
+    if (pendientes) break;
   }
 
   Logger.log("Enviados: " + enviados + " - Fallidos: " + fallidos +
-             " - Hilos revisados: " + hilos.length);
+             " - Hilos para la proxima corrida: " + pendientes +
+             " - Segundos: " + Math.round((Date.now() - inicio) / 1000));
 }
 
 /** Corra esto UNA vez a mano: autoriza permisos y comprueba la tuberia. */

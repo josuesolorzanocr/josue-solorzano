@@ -21,6 +21,16 @@ function huella(...partes: string[]): string {
   return createHash("sha256").update(partes.join("|")).digest("hex");
 }
 
+/**
+ * Los correos de las plataformas traen enlaces con sesión: Connectively manda
+ * enlaces mágicos que abren la cuenta sin contraseña. El texto crudo sólo se
+ * guarda para revisarlo a mano, y para eso los enlaces no hacen falta: el
+ * original sigue en Gmail.
+ */
+function sinEnlaces(texto: string): string {
+  return texto.replace(/\bhttps?:\/\/\S+/gi, "[enlace quitado]");
+}
+
 export async function POST(request: Request) {
   if (!secretoValido(request.headers.get("x-webhook-secret"))) {
     return NextResponse.json({ error: "no autorizado" }, { status: 401 });
@@ -63,7 +73,8 @@ export async function POST(request: Request) {
     // Si el scoring falla, el correo NO se pierde: se guarda entero para
     // revisarlo a mano. Fallar en silencio es peor que fallar sucio.
     const { data, error } = await sb.from("pr_queries").insert({
-      user_id: userId, plataforma, periodista, asunto, cuerpo,
+      user_id: userId, plataforma, periodista, asunto,
+      cuerpo: sinEnlaces(cuerpo),
       score: null,
       score_motivo: "scoring falló: " + (e instanceof Error ? e.message : String(e)),
       email_hash: huellaCorreo,
@@ -75,15 +86,18 @@ export async function POST(request: Request) {
   if (!evaluaciones.length) {
     // Boletín sin consultas reales (sólo avisos de la plataforma). Se registra
     // para no volver a gastar API con el mismo correo.
+    // Sólo el asunto: el cuerpo de un aviso de plataforma no le sirve a nadie
+    // y suele traer el enlace de verificación de la cuenta.
     await sb.from("pr_queries").insert({
       user_id: userId, plataforma, periodista, asunto,
-      cuerpo: cuerpo.slice(0, 2000),
+      cuerpo: "(aviso de la plataforma, sin consultas; el original sigue en Gmail)",
       score: 0, score_motivo: "el correo no traía ninguna consulta de periodista",
       estado: "rechazada", email_hash: huellaCorreo,
     });
     return NextResponse.json({ ok: true, consultas: 0 });
   }
 
+  const vistas = new Set<string>();
   const filas = evaluaciones.map((ev, i) => ({
     user_id: userId,
     plataforma,
@@ -97,15 +111,21 @@ export async function POST(request: Request) {
     // La primera fila lleva la huella del correo (para deduplicar el correo);
     // las demás llevan la suya propia, por consulta.
     email_hash: i === 0 ? huellaCorreo : huella("consulta", plataforma, ev.pregunta),
-  }));
+  })).filter((f) => !vistas.has(f.email_hash) && vistas.add(f.email_hash));
 
-  const { data, error } = await sb.from("pr_queries").insert(filas).select("id,score");
+  // `email_hash` es único. Con un insert normal, UNA consulta repetida (el
+  // mismo boletín la trae dos veces, o ya vino en el de ayer) tumbaba el lote
+  // entero con 500; Apps Script reintentaba cada 5 minutos y cada reintento
+  // le volvía a pagar a Claude. Ahora la repetida se salta y el resto entra.
+  const { data, error } = await sb.from("pr_queries")
+    .upsert(filas, { onConflict: "email_hash", ignoreDuplicates: true })
+    .select("id,score");
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
   const hoy = new Date().toISOString().slice(0, 10);
-  for (const f of filas) {
+  for (const f of data) {
     await sb.rpc("pr_stats_sumar", { p_fecha: hoy, p_user: userId, p_score: f.score })
             .then(() => {}, () => {});
   }
