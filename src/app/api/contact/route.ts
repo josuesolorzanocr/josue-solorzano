@@ -1,7 +1,9 @@
 ﻿import { Resend } from "resend";
 import { NextResponse } from "next/server";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+/** Por demanda: creado al cargar el módulo, `next build` exigía la llave. */
+let cliente: Resend | null = null;
+const resend = () => (cliente ??= new Resend(process.env.RESEND_API_KEY));
 
 const OWNER_EMAIL = "vjosue.3004@gmail.com";
 const OWNER_WHATSAPP = "50689547758";
@@ -30,7 +32,7 @@ export async function POST(request: Request) {
     );
     const whatsappUrl = `https://wa.me/${OWNER_WHATSAPP}?text=${whatsappText}`;
 
-    await resend.emails.send({
+    await resend().emails.send({
       from: "Josue Solorzano Web <noreply@josuesolorzano.com>",
       to: OWNER_EMAIL,
       replyTo: email,
@@ -111,7 +113,7 @@ export async function POST(request: Request) {
       `,
     });
 
-    await resend.emails.send({
+    await resend().emails.send({
       from: "Josue Solorzano <noreply@josuesolorzano.com>",
       to: email,
       subject: "Recibí tu mensaje — Josue Solorzano",

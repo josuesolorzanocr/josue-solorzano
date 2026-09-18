@@ -21,6 +21,11 @@ function huella(...partes: string[]): string {
   return createHash("sha256").update(partes.join("|")).digest("hex");
 }
 
+/** "InnoTech‑IT — Blog" y "Innotech-IT Blog" tienen que dar la misma huella. */
+function normal(s: string | null): string {
+  return (s || "").normalize("NFKD").toLowerCase().replace(/[^a-z0-9]/g, "");
+}
+
 /**
  * Los correos de las plataformas traen enlaces con sesión: Connectively manda
  * enlaces mágicos que abren la cuenta sin contraseña. El texto crudo sólo se
@@ -57,8 +62,12 @@ export async function POST(request: Request) {
 
   // Si este correo exacto ya se procesó, no se vuelve a gastar API.
   const huellaCorreo = huella("correo", plataforma, asunto || "", cuerpo.slice(0, 4000));
+  // `email_hash` cubre las filas de antes del 2026-09-17, cuando la primera
+  // consulta de cada correo cargaba la huella del correo.
   const { data: yaVisto } = await sb
-    .from("pr_queries").select("id").eq("email_hash", huellaCorreo).maybeSingle();
+    .from("pr_queries").select("id")
+    .or(`correo_hash.eq.${huellaCorreo},email_hash.eq.${huellaCorreo}`)
+    .limit(1).maybeSingle();
   if (yaVisto) {
     return NextResponse.json({ ok: true, duplicada: true, id: yaVisto.id });
   }
@@ -77,7 +86,7 @@ export async function POST(request: Request) {
       cuerpo: sinEnlaces(cuerpo),
       score: null,
       score_motivo: "scoring falló: " + (e instanceof Error ? e.message : String(e)),
-      email_hash: huellaCorreo,
+      email_hash: huellaCorreo, correo_hash: huellaCorreo,
     }).select("id").single();
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
     return NextResponse.json({ ok: true, id: data.id, scoring: "falló", revisar_a_mano: true });
@@ -92,31 +101,39 @@ export async function POST(request: Request) {
       user_id: userId, plataforma, periodista, asunto,
       cuerpo: "(aviso de la plataforma, sin consultas; el original sigue en Gmail)",
       score: 0, score_motivo: "el correo no traía ninguna consulta de periodista",
-      estado: "rechazada", email_hash: huellaCorreo,
+      estado: "rechazada", email_hash: huellaCorreo, correo_hash: huellaCorreo,
     });
     return NextResponse.json({ ok: true, consultas: 0 });
   }
 
+  const ahora = Date.now();
   const vistas = new Set<string>();
-  const filas = evaluaciones.map((ev, i) => ({
+  const filas = evaluaciones.map((ev) => ({
     user_id: userId,
     plataforma,
     medio: ev.medio,
     periodista,
     asunto: ev.pregunta.slice(0, 300),
+    titulo: ev.titulo,
     cuerpo: ev.pregunta,
+    deadline: ev.deadline,
+    responder_a: ev.responder_a,
+    sin_ia: ev.sin_ia,
     score: ev.score,
     score_motivo: ev.motivo,
     draft: ev.draft || null,
-    // La primera fila lleva la huella del correo (para deduplicar el correo);
-    // las demás llevan la suya propia, por consulta.
-    email_hash: i === 0 ? huellaCorreo : huella("consulta", plataforma, ev.pregunta),
+    estado: ev.deadline && Date.parse(ev.deadline) <= ahora ? "vencida" : "pendiente",
+    // La huella sale del título LITERAL y del medio, no de la plataforma ni
+    // del resumen de Claude (que cambia de palabras cada vez). Así la misma
+    // consulta repetida en el boletín de mañana, o publicada en HARO y en
+    // Source of Sources a la vez, entra una sola vez.
+    email_hash: huella("consulta", normal(ev.titulo), normal(ev.medio)),
+    correo_hash: huellaCorreo,
   })).filter((f) => !vistas.has(f.email_hash) && vistas.add(f.email_hash));
 
-  // `email_hash` es único. Con un insert normal, UNA consulta repetida (el
-  // mismo boletín la trae dos veces, o ya vino en el de ayer) tumbaba el lote
-  // entero con 500; Apps Script reintentaba cada 5 minutos y cada reintento
-  // le volvía a pagar a Claude. Ahora la repetida se salta y el resto entra.
+  // `email_hash` es único. Con un insert normal, UNA consulta repetida tumbaba
+  // el lote entero con 500; Apps Script reintentaba cada 5 minutos y cada
+  // reintento le volvía a pagar a Claude. Ahora la repetida se salta.
   const { data, error } = await sb.from("pr_queries")
     .upsert(filas, { onConflict: "email_hash", ignoreDuplicates: true })
     .select("id,score");

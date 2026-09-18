@@ -47,6 +47,10 @@ export interface PrQuery {
   aprobada_en: string | null;
   enviada_en: string | null;
   mencion_url: string | null;
+  titulo: string | null;
+  responder_a: string | null;
+  sin_ia: boolean;
+  enviada_a: string | null;
   creado_en: string;
 }
 
