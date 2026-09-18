@@ -25,9 +25,9 @@ export function slugify(text: string): string {
 export const siteConfig = {
   name: "Josué Solórzano",
   description:
-    "Servicios digitales premium: sitios web, optimización para IAs, primera página de Google, perfiles verificados y captura inteligente de leads.",
+    "Autoridad digital y sistemas con IA desde Costa Rica: sitios web que posicionan en Google y en buscadores de IA, relaciones públicas y sistemas de negocio construidos con inteligencia artificial.",
   descriptionEn:
-    "Premium digital services: websites, AI optimization, Google first page, verified profiles, and intelligent lead capture systems.",
+    "Digital authority and AI systems from Costa Rica: websites that rank on Google and in AI search, digital PR, and business systems built with artificial intelligence.",
   url: "https://josuesolorzano.com",
   email: "vjosue.3004@gmail.com",
   whatsapp: "50689547758",

@@ -12,6 +12,8 @@ export interface Book {
   backImage: string;
   coverColor: string;
   year: number;
+  /** Fecha de publicación según Amazon (ISO). */
+  publishedAt?: string;
   pages: number;
   publisher: string;
   amazonUrl: string;
@@ -37,7 +39,9 @@ export const books: Book[] = [
     coverImage: "/images/libro-portada.jpg",
     backImage: "/images/libro-reverso.jpg",
     coverColor: "#b8860b",
-    year: 2024,
+    // Amazon: 23 de mayo de 2026 (verificado el 2026-09-18). Decía 2024.
+    year: 2026,
+    publishedAt: "2026-05-23",
     pages: 200,
     publisher: "Legacy Publishers",
     amazonUrl: "https://a.co/d/0c5Ttyh8",

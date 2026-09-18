@@ -10,9 +10,9 @@ import { siteConfig, alternatesCanonicas } from "@/lib/utils";
 import { faqSchema, professionalServiceSchema } from "@/lib/schema";
 
 export const metadata: Metadata = {
-  title: { absolute: "Josue Solorzano | Sitios Web Premium, SEO y Optimización para IAs" },
+  title: { absolute: "Josué Solórzano | Autoridad Digital y Sistemas con IA" },
   description:
-    "Servicios digitales premium desde Costa Rica para clientes en USA, Europa y el mundo. Sitios web, primera página de Google, optimización para IAs y autoridad digital.",
+    "Autoridad digital desde Costa Rica: sitios web que posicionan en Google y en buscadores de IA, relaciones públicas y sistemas de negocio construidos con IA.",
   alternates: alternatesCanonicas("es", "", "/en"),
 };
 
@@ -23,7 +23,7 @@ const faqs = [
   },
   {
     question: "¿En qué países trabaja Josue Solorzano?",
-    answer: "Trabajo con clientes en todo el mundo, con enfoque especial en USA, Canadá, Europa y América Latina.",
+    answer: "Trabaja de forma remota desde Costa Rica y atiende a expertos y empresas de cualquier país, con enfoque en Estados Unidos, Canadá, Europa y América Latina.",
   },
   {
     question: "¿Cómo funciona el sistema de captura de leads?",

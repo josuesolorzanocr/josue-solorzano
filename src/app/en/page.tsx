@@ -10,16 +10,16 @@ import { siteConfig } from "@/lib/utils";
 import { faqSchema, professionalServiceSchema } from "@/lib/schema";
 
 export const metadata: Metadata = {
-  title: { absolute: "Josue Solorzano | Digital Growth & Brand Positioning Specialist" },
+  title: { absolute: "Josué Solórzano | Digital Authority & AI Systems" },
   description:
-    "Premium digital services from Costa Rica for clients in the USA, Europe, and worldwide. Websites, Google first page, AI optimization, and digital authority.",
+    "Digital authority from Costa Rica: websites that rank on Google and in AI search, digital PR, and business systems built with AI.",
   alternates: {
     canonical: `${siteConfig.url}/en`,
     languages: { es: siteConfig.url, en: `${siteConfig.url}/en`, "x-default": siteConfig.url },
   },
   openGraph: {
-    title: "Josue Solorzano | Digital Growth & Brand Positioning Specialist",
-    description: "Premium digital services: websites, SEO, AI optimization, verified profiles and intelligent lead capture systems.",
+    title: "Josué Solórzano | Digital Authority & AI Systems",
+    description: "Digital authority and AI systems: websites that rank, AI search visibility, digital PR and custom business systems built with AI.",
     url: `${siteConfig.url}/en`,
     images: [{ url: "/og-image.jpg", width: 1200, height: 630, alt: "Josue Solorzano — Brand Positioning" }],
   },
@@ -32,7 +32,7 @@ const faqs = [
   },
   {
     question: "What countries does Josue Solorzano work with?",
-    answer: "Josue works with clients worldwide, with a special focus on the USA, Canada, Europe, and Latin America.",
+    answer: "Josué works remotely from Costa Rica with experts and companies in any country, with a focus on the USA, Canada, Europe, and Latin America.",
   },
   {
     question: "How does the lead capture system work?",

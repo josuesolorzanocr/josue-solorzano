@@ -45,7 +45,7 @@ export default async function BookEnPage({ params }: Props) {
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(bookSchema({ title: book.titleEn, description: book.descriptionEn, year: book.year, publisher: book.publisher, slug: book.slug })) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(bookSchema({ title: book.titleEn, description: book.descriptionEn, year: book.year, publishedAt: book.publishedAt, publisher: book.publisher, slug: book.slug })) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema({ title: book.titleEn, description: book.subtitleEn, url: `${siteConfig.url}/en/books/${book.slug}`, breadcrumbs })) }} />
 
       <section className="pt-32 pb-16">
