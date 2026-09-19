@@ -1,6 +1,7 @@
 ﻿import { Resend } from "resend";
 import { NextResponse } from "next/server";
 import { ipDe, registrarEnvio, MAX_ENVIOS } from "@/lib/limite-contacto";
+import { guardarClientePotencial, marcarAvisado } from "@/lib/clientes-potenciales";
 
 /** Por demanda: creado al cargar el módulo, `next build` exigía la llave. */
 let cliente: Resend | null = null;
@@ -31,6 +32,10 @@ export async function POST(request: Request) {
           : `Llegaste al límite de ${MAX_ENVIOS} mensajes en 24 horas. Si es urgente, escríbeme por WhatsApp.`,
       }, { status: 429 });
     }
+
+    // Primero a la base de clientes potenciales: si el correo falla después,
+    // el prospecto no se pierde.
+    const clienteId = await guardarClientePotencial({ name, company, email, service, message, en });
 
     // Lo que escribe el visitante va escapado y con tope en el HTML: el
     // formulario no debe poder meter enlaces ni imágenes en el correo del dueño
@@ -131,7 +136,14 @@ export async function POST(request: Request) {
 
     // Resend no lanza cuando falla: devuelve { error }. Sin esta revisión el
     // formulario decía "listo" aunque el aviso no saliera, y el prospecto se perdía.
-    if (aviso.error) throw new Error(`aviso al dueño: ${aviso.error.message}`);
+    // Si el mensaje ya quedó en la base, no se perdió: se sigue y queda
+    // `aviso_enviado = false` para verlo. Sin base y sin correo, sí se perdió.
+    if (aviso.error) {
+      if (!clienteId) throw new Error(`aviso al dueño: ${aviso.error.message}`);
+      console.error("Contact API aviso (el mensaje quedó en la base):", aviso.error);
+    } else if (clienteId) {
+      await marcarAvisado(clienteId);
+    }
 
     const acuse = await resend().emails.send({
       from: "Josue Solorzano <noreply@josuesolorzano.com>",
