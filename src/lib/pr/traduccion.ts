@@ -56,10 +56,32 @@ async function traducir(instruccion: string, texto: string): Promise<string> {
   return salida;
 }
 
+/**
+ * Nota fija para los periodistas que no aceptan texto de IA: Josué escribe en
+ * español con sus palabras y la IA sólo traduce. Se dice, no se esconde.
+ * Va literal (no pasa por Claude) para que siempre diga exactamente esto.
+ * Ojo: no garantiza pasar el detector automático de HARO (Pangram mide el
+ * texto, no lee la nota); sirve para que el periodista que la reciba sepa.
+ */
+export const NOTA_TRADUCCION_EN =
+  "Note: I wrote this answer myself in Spanish, my native language; the English version was translated with an AI tool.";
+
+/** ¿El texto ya menciona la traducción? Para no poner la nota dos veces. */
+export function mencionaTraduccion(texto: string): boolean {
+  return /traduc|translat/i.test(texto);
+}
+
 /** Español de Josué → inglés que se envía, con la firma en inglés del perfil. */
-export async function aIngles(textoEs: string, perfil: Perfil): Promise<string> {
+export async function aIngles(
+  textoEs: string,
+  perfil: Perfil,
+  opciones: { notaTraduccion?: boolean } = {},
+): Promise<string> {
   const { cuerpo, tenia } = separarFirma(textoEs, [perfil.firma_es, perfil.firma_en]);
-  const en = await traducir(A_INGLES, cuerpo);
+  let en = await traducir(A_INGLES, cuerpo);
+  if (opciones.notaTraduccion && !mencionaTraduccion(cuerpo)) {
+    en = `${en}\n\n${NOTA_TRADUCCION_EN}`;
+  }
   return tenia ? `${en}\n\n${perfil.firma_en}` : en;
 }
 

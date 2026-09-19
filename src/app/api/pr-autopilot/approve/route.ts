@@ -3,6 +3,7 @@ import { Resend } from "resend";
 import { prSupabase } from "@/lib/pr/supabase";
 import { sesionActual, puedeAprobar } from "@/lib/pr/auth";
 import { esCorreo } from "@/lib/pr/fechas";
+import { mencionaTraduccion } from "@/lib/pr/traduccion";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -42,7 +43,7 @@ export async function POST(request: Request) {
   }
 
   const { data: q } = await sb.from("pr_queries")
-    .select("id,titulo,estado,draft,sin_ia").eq("id", id).maybeSingle();
+    .select("id,titulo,estado,draft,sin_ia,idioma").eq("id", id).maybeSingle();
   if (!q) return NextResponse.json({ error: "no existe" }, { status: 404 });
   if (q.estado === "enviada") {
     return NextResponse.json({ error: "ya se había contestado" }, { status: 409 });
@@ -74,6 +75,13 @@ export async function POST(request: Request) {
   const para = String(destinatario || "").trim();
   if (!esCorreo(para)) {
     return NextResponse.json({ error: "El correo del periodista no es válido." }, { status: 400 });
+  }
+
+  // A quien no acepta IA no se le manda una traducción de IA sin decirlo.
+  if (q.sin_ia && q.idioma !== "es" && respuestaEs && !mencionaTraduccion(cuerpo)) {
+    return NextResponse.json({
+      error: "Falta la nota de que la respuesta fue traducida del español. Vuelva a preparar la versión en inglés.",
+    }, { status: 422 });
   }
 
   const apiKey = process.env.RESEND_API_KEY;

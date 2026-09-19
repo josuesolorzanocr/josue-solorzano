@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { PrQuery } from "@/lib/pr/supabase";
 import { esCorreo, type Vencimiento } from "@/lib/pr/fechas";
+import type { UsoCupo } from "@/lib/pr/cupos";
 
 function colorScore(s: number | null) {
   if (s === null) return "bg-neutral-700 text-neutral-200";
@@ -25,10 +26,11 @@ const saleEnIngles = (q: PrQuery) => q.idioma !== "es";
 const caja = "w-full rounded-lg bg-neutral-950 border border-neutral-800 px-3 py-2 text-sm";
 
 export default function PanelQueries({
-  queries, vencimientos, vista, puedeAprobar,
+  queries, vencimientos, cupos, vista, puedeAprobar,
 }: {
   queries: PrQuery[];
   vencimientos: Record<string, Vencimiento | null>;
+  cupos: UsoCupo[];
   vista: string;
   puedeAprobar: boolean;
 }) {
@@ -259,6 +261,18 @@ export default function PanelQueries({
                   )}
                   {!q.responder_a && <p className="mt-1 text-amber-300">No se encontró el contacto. Búsquelo en el boletín original en Gmail.</p>}
                   {ingles && <p className="mt-1 text-neutral-400">El periodista escribió en inglés: usted trabaja en español y la respuesta sale en inglés.</p>}
+                  {(() => {
+                    const c = cupos.find((x) => x.plataforma === q.plataforma);
+                    if (!c || c.limiteMensual === null) return null;
+                    return (
+                      <p className={`mt-1 ${c.quedan === 0 ? "font-medium text-amber-300" : "text-neutral-400"}`}>
+                        {q.plataforma} permite {c.limiteMensual} respuestas al mes en el plan gratis.{" "}
+                        {c.quedan === 0
+                          ? "Ya las usó todas este mes: esta sólo se podría contestar pagando."
+                          : `Le quedan ${c.quedan}: gástelas sólo en consultas que calcen perfecto.`}
+                      </p>
+                    );
+                  })()}
                 </div>
 
                 {q.consulta_original && (
@@ -295,7 +309,7 @@ export default function PanelQueries({
                   <p className="rounded-lg bg-red-950 p-3 text-sm text-red-200">
                     Este periodista <strong>no acepta respuestas escritas con IA</strong>. Lo de abajo es
                     sólo una guía: escriba la respuesta con sus palabras y sus propios ejemplos.
-                    {ingles && " La traducción al inglés también la hace una IA: si quiere ser transparente, termine su texto con «Traducido del español»."}
+                    {ingles && " Como la traducción al inglés la hace una IA, al preparar el inglés se agrega sola una nota que lo dice. Ojo: la nota es transparencia, no garantiza pasar el detector automático de IA de HARO."}
                   </p>
                 )}
 

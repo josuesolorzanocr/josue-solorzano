@@ -28,7 +28,7 @@ export async function POST(request: Request) {
 
   const sb = prSupabase();
   const { data: q } = await sb.from("pr_queries")
-    .select("id,draft,draft_editado,draft_es,idioma").eq("id", id).maybeSingle();
+    .select("id,draft,draft_editado,draft_es,idioma,sin_ia").eq("id", id).maybeSingle();
   if (!q) return NextResponse.json({ error: "no existe" }, { status: 404 });
 
   try {
@@ -47,7 +47,8 @@ export async function POST(request: Request) {
     if (modo === "a_ingles") {
       const es = String(texto_es || "").trim();
       if (!es) return NextResponse.json({ error: "Escriba primero la respuesta en español." }, { status: 400 });
-      const en = await aIngles(es, perfil);
+      // Si el periodista no acepta IA, la respuesta traducida lleva la nota.
+      const en = await aIngles(es, perfil, { notaTraduccion: !!q.sin_ia });
       const vuelta_es = await aEspanol(en, perfil);
       return NextResponse.json({ en, vuelta_es });
     }
