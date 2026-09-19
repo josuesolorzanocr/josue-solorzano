@@ -156,7 +156,7 @@ Cuando un medio de autoridad habla de ti, las IAs lo interpretan como una señal
 
 ### 4. Perfil en Wikidata
 
-Wikidata es una de las fuentes de datos más consultadas por los modelos de IA. Tener un perfil ahí es casi garantía de que las IAs te considerarán al generar respuestas.
+Wikidata es una de las fuentes de datos más consultadas por los modelos de IA. Tener un perfil ahí ayuda a que las IAs sepan con precisión quién eres. No garantiza que te mencionen, pero sin él les cuesta más distinguirte.
 
 ### 5. robots.txt configurado correctamente
 
@@ -195,7 +195,7 @@ When an authority outlet talks about you, AIs interpret it as a credibility sign
 
 ### 4. Wikidata profile
 
-Wikidata is one of the most consulted data sources by AI models. Having a profile there is almost a guarantee that AIs will consider you when generating answers.
+Wikidata is one of the most consulted data sources by AI models. Having a profile there helps AIs identify exactly who you are. It doesn't guarantee they'll mention you, but without one they have a harder time telling you apart.
 
 ### 5. Correctly configured robots.txt
 
@@ -434,7 +434,7 @@ Un perfil completo, con recomendaciones reales, publicaciones consistentes y con
 
 Wikidata es la base de datos estructurada que alimenta a Wikipedia, Google Knowledge Graph, y a la mayoría de modelos de lenguaje incluyendo ChatGPT y Claude.
 
-Tener una entrada en Wikidata es una de las formas más directas de asegurar que las IAs te incluyan en sus respuestas. No cualquiera tiene una entrada ahí — lo que hace que tenerla sea una señal poderosa de autoridad.
+Tener una entrada en Wikidata es una de las formas más directas de que las IAs sepan quién eres. No cualquiera tiene una entrada ahí — lo que hace que tenerla sea una señal poderosa de autoridad.
 
 ## HARO: la puerta a los medios globales
 
@@ -974,14 +974,14 @@ Los paquetes (como los combos de $497, $1,497, $2,997) son más fáciles de comp
 
 No eres el más barato. Eres el que ofrece calidad internacional a un precio justo. Esa es la propuesta de valor que resuena en mercados de USA y Europa.
 
-Clientes que buscan el precio más bajo no son los mejores clientes. Los mejores clientes buscan la mejor relación calidad-precio y están dispuestos a pagar bien por resultados garantizados.
+Clientes que buscan el precio más bajo no son los mejores clientes. Los mejores clientes buscan la mejor relación calidad-precio y están dispuestos a pagar bien por resultados que se puedan medir.
     `,
     contentEn: `
 ## The low-price mistake in high-purchasing-power markets
 
 When a LATAM professional offers digital services to the US or European market, the first instinct is usually to charge cheaply to "be competitive." This is a mistake that can have the opposite effect.
 
-In mature markets, price is a quality signal. A $50 website generates immediate distrust. Your positioning: not the cheapest, but the best quality-to-price ratio with guaranteed results. That's the value proposition that resonates in US and European markets.
+In mature markets, price is a quality signal. A $50 website generates immediate distrust. Your positioning: not the cheapest, but the best quality-to-price ratio, with results you can measure. That's the value proposition that resonates in US and European markets.
     `,
   },
   {
