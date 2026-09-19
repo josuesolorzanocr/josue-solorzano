@@ -123,7 +123,7 @@ export default function AboutEnPage() {
       <section className="py-16 bg-[#0d0d14]">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-white mb-12 text-center">
-            Why clients <span className="gradient-text">trust me</span>
+            How I <span className="gradient-text">work</span>
           </h2>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {values.map((v) => (
