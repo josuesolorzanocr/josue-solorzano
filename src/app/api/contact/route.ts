@@ -1,7 +1,7 @@
 ﻿import { Resend } from "resend";
 import { NextResponse } from "next/server";
 import { ipDe, registrarEnvio, MAX_ENVIOS } from "@/lib/limite-contacto";
-import { guardarClientePotencial, marcarAvisado } from "@/lib/clientes-potenciales";
+import { guardarProspectoDelSitio, marcarAvisado } from "@/lib/prospectos-sitio-web";
 
 /** Por demanda: creado al cargar el módulo, `next build` exigía la llave. */
 let cliente: Resend | null = null;
@@ -33,9 +33,9 @@ export async function POST(request: Request) {
       }, { status: 429 });
     }
 
-    // Primero a la base de clientes potenciales: si el correo falla después,
+    // Primero a la base (prospectos_sitio_web): si el correo falla después,
     // el prospecto no se pierde.
-    const clienteId = await guardarClientePotencial({ name, company, email, service, message, en });
+    const prospectoId = await guardarProspectoDelSitio({ name, company, email, service, message, en });
 
     // Lo que escribe el visitante va escapado y con tope en el HTML: el
     // formulario no debe poder meter enlaces ni imágenes en el correo del dueño
@@ -139,10 +139,10 @@ export async function POST(request: Request) {
     // Si el mensaje ya quedó en la base, no se perdió: se sigue y queda
     // `aviso_enviado = false` para verlo. Sin base y sin correo, sí se perdió.
     if (aviso.error) {
-      if (!clienteId) throw new Error(`aviso al dueño: ${aviso.error.message}`);
+      if (!prospectoId) throw new Error(`aviso al dueño: ${aviso.error.message}`);
       console.error("Contact API aviso (el mensaje quedó en la base):", aviso.error);
-    } else if (clienteId) {
-      await marcarAvisado(clienteId);
+    } else if (prospectoId) {
+      await marcarAvisado(prospectoId);
     }
 
     const acuse = await resend().emails.send({
