@@ -105,7 +105,7 @@ export default async function PrAutopilotPage({
   ];
 
   return (
-    <main className="min-h-screen bg-neutral-950 px-4 py-10 text-white">
+    <main className="min-h-screen bg-neutral-950 px-4 pt-28 pb-10 text-white">
       <div className="mx-auto max-w-5xl space-y-8">
         <header className="flex items-baseline justify-between gap-4">
           <div>

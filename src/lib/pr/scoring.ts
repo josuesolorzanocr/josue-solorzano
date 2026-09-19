@@ -1,8 +1,7 @@
 import type { Perfil } from "./perfil";
 import { anthropic, MODELO, textoDe } from "./claude";
-import {
-  reglasDeRedaccion, REGLA_SIN_IA, checklistValido, parsearJson, type ItemChecklist,
-} from "./redaccion";
+import { redactarUna, parsearJson, type ItemChecklist } from "./redaccion";
+import { bloqueDeConsulta } from "./boletin";
 
 /**
  * Tope alto a propósito. Con 1500 se truncaba la respuesta a medias y el JSON
@@ -99,6 +98,11 @@ PASO 1 — Extraé cada consulta individual.
 Ignorá encabezados, pies, enlaces de "ver todas", publicidad y avisos de la
 plataforma. Si el correo no trae ninguna consulta real de un periodista,
 devolvé un arreglo vacío [].
+NO es una consulta, y no la incluyas: una publicación de alguien que se
+OFRECE como fuente ("I'd be happy to share my perspective", "available for
+comment", "#PRRequest" de un experto o una agencia). Una consulta es un
+periodista o medio que BUSCA fuentes. Contestarle a otra fuente gasta una
+respuesta en nada (pasó el 2026-09-18 con un tuit en Connectively).
 
 PASO 2 — Para CADA consulta, por separado:
 
@@ -126,14 +130,8 @@ a) SCORE de 0 a 100: qué tan bien encaja con la experiencia REAL de esta person
    Castigá el score si responder exigiría inventar credenciales, cifras o
    experiencia que el perfil no respalda.
 
-b) DRAFT de respuesta al periodista, en el MISMO idioma en que él escribió
-   (casi siempre inglés). Estas instrucciones y el resumen van en español:
-   eso NO cambia el idioma del draft.
-   Si el score es menor a 40, o si la fecha límite ya pasó, poné el draft en ""
-   (vacío) y el checklist en [] para no gastar trabajo.
-   ${REGLA_SIN_IA}
-   Para el draft normal:
-   ${reglasDeRedaccion(input.perfil)}
+NO escribas borradores en este paso: sólo extraé y calificá. Los borradores
+se escriben después, uno por uno, sólo para las consultas que valen la pena.
 
 Devolvé SOLO un arreglo JSON válido, sin texto alrededor y sin bloques de código:
 [{"titulo":"<título literal, idioma original>",
@@ -143,10 +141,9 @@ Devolvé SOLO un arreglo JSON válido, sin texto alrededor y sin bloques de cód
   "responder_a":"<correo o enlace literal, o null>",
   "sin_ia":<true o false>,
   "idioma":"<en o es>",
+  "busca_fuentes":<true si un periodista o medio BUSCA fuentes; false si alguien se OFRECE como fuente, o es publicidad o aviso>,
   "score":<número>,
-  "motivo":"<una frase>",
-  "draft":"<el texto o cadena vacía>",
-  "checklist":[{"pide":"<...>","cumple":<true o false>}]}]`;
+  "motivo":"<una frase>"}]`;
 
   const r = await anthropic().messages.create({
     model: MODELO,
@@ -168,7 +165,10 @@ Devolvé SOLO un arreglo JSON válido, sin texto alrededor y sin bloques de cód
     throw new Error("Se esperaba un arreglo y llegó: " + typeof parsed);
   }
 
-  return (parsed as Record<string, unknown>[]).map((p) => ({
+  // La instrucción de no incluir ofertas de fuentes no alcanzó sola (prueba del
+  // 2026-09-18): el modelo tiene que marcarlo y el código lo descarta.
+  const consultas = (parsed as Record<string, unknown>[]).filter((p) => p.busca_fuentes !== false);
+  const evaluaciones: Evaluacion[] = consultas.map((p) => ({
     titulo: String(p.titulo || p.pregunta || "").slice(0, 500),
     pregunta: String(p.pregunta || "").slice(0, 2000),
     medio: p.medio ? String(p.medio).slice(0, 200) : null,
@@ -178,7 +178,35 @@ Devolvé SOLO un arreglo JSON válido, sin texto alrededor y sin bloques de cód
     idioma: p.idioma === "es" ? "es" as const : "en" as const,
     score: Math.max(0, Math.min(100, Math.round(Number(p.score) || 0))),
     motivo: String(p.motivo || "").slice(0, 500),
-    draft: String(p.draft || "").slice(0, 8000),
-    checklist: checklistValido(p.checklist),
+    draft: "",
+    checklist: [],
   })).filter((e) => e.pregunta);
+
+  // PASO 2, aparte: borrador sólo para las que valen la pena y siguen a
+  // tiempo, una por una y en paralelo. Antes el borrador y el checklist de
+  // TODAS iban en la misma respuesta: el 2026-09-18 un boletín largo de
+  // Qwoted pasó los 8000 tokens y se perdió entero. Así, por largo que sea el
+  // boletín, la calificación es corta y cada borrador tiene su propio espacio.
+  const ahoraMs = Date.now();
+  await Promise.all(evaluaciones.map(async (ev) => {
+    const vencida = ev.deadline !== null && Date.parse(ev.deadline) <= ahoraMs;
+    if (ev.score < UMBRAL_BORRADOR || vencida) return;
+    const consulta = bloqueDeConsulta(input.cuerpo, ev.titulo)
+      || [ev.titulo, ev.medio && `Medio: ${ev.medio}`, `Resumen: ${ev.pregunta}`].filter(Boolean).join("\n");
+    try {
+      const r = await redactarUna({
+        consulta, plataforma: input.plataforma, sin_ia: ev.sin_ia, idioma: ev.idioma, perfil: input.perfil,
+      });
+      ev.draft = r.draft;
+      ev.checklist = r.checklist;
+    } catch (e) {
+      // Un borrador que falla no tumba la calificación: queda para «Rehacer».
+      ev.motivo = `${ev.motivo} (el borrador falló: ${e instanceof Error ? e.message : String(e)}; use «Rehacer borrador»)`.slice(0, 500);
+    }
+  }));
+
+  return evaluaciones;
 }
+
+/** Desde qué nota se escribe borrador: lo mismo que entra a «Para responder». */
+const UMBRAL_BORRADOR = 40;
