@@ -44,12 +44,24 @@ export function limpiarDestino(v: unknown): string | null {
   try {
     const u = new URL(s);
     if (u.protocol !== "https:" && u.protocol !== "http:") return null;
+    // Enlaces de seguimiento de correo (Qwoted manda "url1940.qwoted.com/ls/click?…"):
+    // sin sus parámetros no llevan a ningún lado. Mejor nada; el webhook pone la
+    // dirección de la plataforma (visto el 2026-09-18 con American City Business Journals).
+    const rastreo = /^(url\d+|click|links?|email|track|t)\./i.test(u.hostname)
+      || /\/(ls|wf)\/click/i.test(u.pathname);
+    if (rastreo) return null;
     const conToken = u.pathname.split("/").some((p) => /^[A-Za-z0-9_-]{32,}$/.test(p));
     return conToken ? u.origin : u.origin + u.pathname;
   } catch {
     return null;
   }
 }
+
+/** Dónde se contesta, cuando la consulta no trae su propio enlace o correo. */
+export const DONDE_SE_CONTESTA: Record<string, string> = {
+  Qwoted: "https://app.qwoted.com/",
+  Connectively: "https://www.connectively.us/experts/questions",
+};
 
 function fechaValida(v: unknown): string | null {
   if (typeof v !== "string" || !v.trim()) return null;
