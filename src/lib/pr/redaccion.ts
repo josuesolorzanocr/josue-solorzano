@@ -112,7 +112,9 @@ Devolvé SOLO un objeto JSON válido, sin texto alrededor y sin bloques de códi
 
   const r = await anthropic().messages.create({
     model: MODELO,
-    max_tokens: 3000,
+    // El modelo razona antes de escribir y ese razonamiento cuenta dentro del
+    // tope: con 3000 podía comerse el borrador (ver traduccion.ts, 2026-09-19).
+    max_tokens: 12000,
     messages: [{ role: "user", content: prompt }],
   });
   if (r.stop_reason === "max_tokens") throw new Error("El borrador se cortó a la mitad.");

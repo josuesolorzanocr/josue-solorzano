@@ -7,8 +7,10 @@ import { bloqueDeConsulta } from "./boletin";
  * Tope alto a propósito. Con 1500 se truncaba la respuesta a medias y el JSON
  * quedaba roto: el 2026-09-02 se perdió así una consulta con score 82.
  * Un boletín con 6 consultas necesita 6 borradores.
+ * 2026-09-19: el razonamiento automático del modelo cuenta dentro del tope y
+ * puede gastar miles de tokens antes de escribir; de 8000 pasó a 16000.
  */
-const MAX_TOKENS = 8000;
+const MAX_TOKENS = 16000;
 
 export interface Evaluacion {
   /** Título de la consulta copiado literal del boletín: sirve de huella estable. */

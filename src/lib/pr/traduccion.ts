@@ -45,9 +45,14 @@ async function traducir(instruccion: string, texto: string): Promise<string> {
   if (texto.length > MAX_CARACTERES) {
     throw new Error(`El texto es muy largo para traducir (máximo ${MAX_CARACTERES} caracteres).`);
   }
+  // Sin razonamiento: traducir no lo necesita. Con el razonamiento automático
+  // del modelo, a veces gastaba 2,520 de 3,000 tokens pensando y la traducción
+  // salía cortada (visto el 2026-09-19 con una respuesta de 400 palabras,
+  // 1 de cada 3 intentos). El tope alto es margen, no se cobra si no se usa.
   const r = await anthropic().messages.create({
     model: MODELO,
-    max_tokens: 3000,
+    max_tokens: 6000,
+    thinking: { type: "disabled" },
     messages: [{ role: "user", content: `${instruccion}\n\n---\n${texto}\n---` }],
   });
   if (r.stop_reason === "max_tokens") throw new Error("La traducción se cortó a la mitad.");
