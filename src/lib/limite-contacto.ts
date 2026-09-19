@@ -9,7 +9,7 @@ import { prSupabase } from "@/lib/pr/supabase";
  * "Persona" = misma IP o mismo correo: cambiar sólo uno de los dos no alcanza.
  * En la base quedan huellas HMAC, nunca la IP ni el correo, y se borran solas.
  */
-export const MAX_ENVIOS = 12;
+export const MAX_ENVIOS = 5;
 const VENTANA_MS = 24 * 60 * 60 * 1000;
 const GUARDAR_MS = 7 * 24 * 60 * 60 * 1000;
 
