@@ -1,5 +1,6 @@
 ﻿import { Resend } from "resend";
 import { NextResponse } from "next/server";
+import { ipDe, registrarEnvio, MAX_ENVIOS } from "@/lib/limite-contacto";
 
 /** Por demanda: creado al cargar el módulo, `next build` exigía la llave. */
 let cliente: Resend | null = null;
@@ -12,6 +13,7 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
     const { name, company, email, service, message } = body;
+    const en = body.lang === "en";
 
     if (!name || !email || !message) {
       return NextResponse.json({ error: "Faltan campos requeridos." }, { status: 400 });
@@ -20,6 +22,14 @@ export async function POST(request: Request) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       return NextResponse.json({ error: "Email inválido." }, { status: 400 });
+    }
+
+    if (!(await registrarEnvio(ipDe(request), email))) {
+      return NextResponse.json({
+        error: en
+          ? `You've reached the limit of ${MAX_ENVIOS} messages in 24 hours. If it's urgent, message me on WhatsApp.`
+          : `Llegaste al límite de ${MAX_ENVIOS} mensajes en 24 horas. Si es urgente, escríbeme por WhatsApp.`,
+      }, { status: 429 });
     }
 
     // Lo que escribe el visitante va escapado y con tope en el HTML: el
