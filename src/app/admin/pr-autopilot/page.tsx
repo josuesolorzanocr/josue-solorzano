@@ -4,6 +4,7 @@ import { sesionActual } from "@/lib/pr/auth";
 import { prSupabase, type PrQuery } from "@/lib/pr/supabase";
 import { vencimiento, type Vencimiento } from "@/lib/pr/fechas";
 import { historialPerfil } from "@/lib/pr/perfil";
+import { usoDeCupos, type UsoCupo } from "@/lib/pr/cupos";
 import PanelQueries from "./PanelQueries";
 import EditorPerfil from "./EditorPerfil";
 
@@ -90,6 +91,11 @@ export default async function PrAutopilotPage({
   const vencimientos: Record<string, Vencimiento | null> = {};
   for (const q of queries) vencimientos[q.id] = vencimiento(q.deadline);
 
+  // Cuántas contestó por plataforma: Connectively y Qwoted tienen tope mensual.
+  const { data: enviadas } = await sb.from("pr_queries")
+    .select("plataforma,enviada_en").eq("estado", "enviada");
+  const cupos: UsoCupo[] = usoDeCupos(enviadas || []);
+
   const tarjetas = [
     { etq: "Recibidas (30 d)", n: suma("recibidas") },
     { etq: "Score 70+ (30 d)", n: suma("score_alto") },
@@ -117,6 +123,30 @@ export default async function PrAutopilotPage({
               <div className="mt-1 text-xs text-neutral-400">{t.etq}</div>
             </div>
           ))}
+        </section>
+
+        <section>
+          <h2 className="mb-3 text-sm font-medium text-neutral-300">Respuestas por plataforma, este mes</h2>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            {cupos.map((c) => (
+              <div key={c.plataforma}
+                className={`rounded-xl border p-4 ${c.quedan === 0 ? "border-amber-700 bg-amber-950/40" : "border-neutral-800 bg-neutral-900"}`}>
+                <div className="text-xs uppercase tracking-wide text-neutral-500">{c.plataforma}</div>
+                <div className="mt-1 text-2xl font-semibold tabular-nums">
+                  {c.esteMes}
+                  {c.limiteMensual !== null && <span className="text-base text-neutral-500"> de {c.limiteMensual}</span>}
+                </div>
+                <div className={`mt-1 text-xs ${c.quedan === 0 ? "text-amber-300" : "text-neutral-400"}`}>
+                  {c.quedan === null ? "sin tope" : c.quedan === 0 ? "sin respuestas este mes" : `quedan ${c.quedan}`}
+                  {" · "}{c.total} en total
+                </div>
+                <div className="mt-2 text-[11px] leading-snug text-neutral-500">{c.nota}</div>
+              </div>
+            ))}
+          </div>
+          <p className="mt-2 text-xs text-neutral-600">
+            Cuenta lo que usted marca como contestado en este tablero. El número oficial de Connectively y Qwoted está en cada plataforma.
+          </p>
         </section>
 
         <nav className="flex flex-wrap gap-2 border-b border-neutral-800 pb-3">
@@ -152,6 +182,7 @@ export default async function PrAutopilotPage({
           <PanelQueries
             queries={queries}
             vencimientos={vencimientos}
+            cupos={cupos}
             vista={vista}
             puedeAprobar={user.rol !== "viewer"}
           />
