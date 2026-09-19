@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { createHash, timingSafeEqual } from "crypto";
 import { prSupabase } from "@/lib/pr/supabase";
-import { evaluarCorreo } from "@/lib/pr/scoring";
+import { evaluarCorreo, DONDE_SE_CONTESTA } from "@/lib/pr/scoring";
 import { perfilVigente, type Perfil } from "@/lib/pr/perfil";
 import { bloqueDeConsulta } from "@/lib/pr/boletin";
 
@@ -123,7 +123,7 @@ export async function POST(request: Request) {
     titulo: ev.titulo,
     cuerpo: ev.pregunta,
     deadline: ev.deadline,
-    responder_a: ev.responder_a,
+    responder_a: ev.responder_a ?? DONDE_SE_CONTESTA[plataforma] ?? null,
     sin_ia: ev.sin_ia,
     idioma: ev.idioma,
     score: ev.score,
