@@ -105,9 +105,13 @@ export async function POST(request: Request) {
     }, { status: 502 });
   }
 
+  // El identificador de Resend se guarda: es el comprobante. Sin él no se
+  // puede preguntar después si el correo se entregó o rebotó, y "enviada"
+  // queda siendo una bandera (pasó el 2026-09-19 con Business Insight).
   await sb.from("pr_queries").update({
     estado: "enviada", draft_editado: cuerpo, respuesta_es: respuestaEs, enviada_a: para,
     aprobada_por: user!.id, aprobada_en: ahora, enviada_en: ahora,
+    resend_id: envio.id, entrega: "sent", entrega_en: ahora,
   }).eq("id", id);
 
   return NextResponse.json({ ok: true, estado: "enviada", canal: "correo", resend_id: envio.id });
