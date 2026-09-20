@@ -49,6 +49,9 @@ export default function PanelQueries({
   const [error, setError] = useState("");
   const [aviso, setAviso] = useState("");
   const [copiado, setCopiado] = useState(false);
+  /** Estado de entrega consultado a Resend, por consulta. */
+  const [entregas, setEntregas] = useState<Record<string, { entrega: string | null; texto: string }>>({});
+  const [revisandoEntrega, setRevisandoEntrega] = useState("");
   /** Checklist recién rehecho, antes de que el servidor refresque la lista. */
   const [checklists, setChecklists] = useState<Record<string, PrQuery["checklist"]>>({});
 
@@ -163,6 +166,25 @@ export default function PanelQueries({
     }
   }
 
+  /** Le pregunta a Resend qué pasó con el correo: entregado, rebotado o en camino. */
+  async function revisarEntrega(q: PrQuery) {
+    setRevisandoEntrega(q.id);
+    setError("");
+    try {
+      const r = await fetch("/api/pr-autopilot/entrega", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: q.id }),
+      });
+      const d = await r.json();
+      if (!r.ok) throw new Error(d.error || "no se pudo consultar");
+      setEntregas((prev) => ({ ...prev, [q.id]: { entrega: d.entrega ?? null, texto: d.texto } }));
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setRevisandoEntrega("");
+    }
+  }
+
   async function copiar() {
     await navigator.clipboard.writeText(texto);
     setCopiado(true);
@@ -209,6 +231,22 @@ export default function PanelQueries({
                   <p className="mt-1 text-xs text-emerald-400" suppressHydrationWarning>
                     {q.enviada_a ? `Enviada a ${q.enviada_a}` : "Contestada en la plataforma"}
                     {q.enviada_en ? ` · ${new Date(q.enviada_en).toLocaleString("es-CR", { timeZone: "America/Costa_Rica" })}` : ""}
+                  </p>
+                )}
+                {q.estado === "enviada" && q.enviada_a && (
+                  <p className="mt-1 flex flex-wrap items-center gap-2 text-xs">
+                    <span className={colorEntrega(entregas[q.id]?.entrega ?? q.entrega)}>
+                      {textoEntrega(entregas[q.id], q)}
+                    </span>
+                    {puedeAprobar && (
+                      <button
+                        onClick={() => revisarEntrega(q)}
+                        disabled={revisandoEntrega === q.id}
+                        className="rounded border border-neutral-700 px-2 py-0.5 text-xs hover:bg-neutral-800 disabled:opacity-40"
+                      >
+                        {revisandoEntrega === q.id ? "Consultando…" : "Revisar entrega"}
+                      </button>
+                    )}
                   </p>
                 )}
                 {q.score_motivo && (
@@ -403,4 +441,30 @@ export default function PanelQueries({
       })}
     </section>
   );
+}
+
+/** Verde si llegó, rojo si rebotó, ámbar mientras no se sepa. */
+function colorEntrega(entrega: string | null | undefined): string {
+  if (!entrega) return "text-neutral-500";
+  if (["delivered", "opened", "clicked"].includes(entrega)) return "text-emerald-400";
+  if (["bounced", "complained", "canceled"].includes(entrega)) return "font-semibold text-red-400";
+  return "text-amber-300";
+}
+
+function textoEntrega(
+  consultado: { entrega: string | null; texto: string } | undefined,
+  q: PrQuery,
+): string {
+  if (consultado) return consultado.texto;
+  const CORTO: Record<string, string> = {
+    sent: "Aceptada por el servidor; entrega sin confirmar.",
+    delivered: "Entregada en el buzón del periodista.",
+    delivery_delayed: "Retrasada: el servidor del periodista no la acepta todavía.",
+    bounced: "REBOTÓ: no llegó.",
+    complained: "La marcaron como spam.",
+    opened: "Entregada y abierta.",
+    clicked: "Entregada, abierta y con clic.",
+  };
+  if (q.entrega) return CORTO[q.entrega] || `Estado: ${q.entrega}`;
+  return q.resend_id ? "Entrega sin revisar." : "Sin comprobante: se envió antes de que el sistema lo guardara.";
 }

@@ -56,6 +56,10 @@ export interface PrQuery {
   respuesta_es: string | null;
   consulta_original: string | null;
   checklist: { pide: string; cumple: boolean }[] | null;
+  /** Comprobante de Resend y último estado de entrega conocido. */
+  resend_id: string | null;
+  entrega: string | null;
+  entrega_en: string | null;
   creado_en: string;
 }
 
