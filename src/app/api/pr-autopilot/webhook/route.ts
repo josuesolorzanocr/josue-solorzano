@@ -4,6 +4,7 @@ import { prSupabase } from "@/lib/pr/supabase";
 import { evaluarCorreo, DONDE_SE_CONTESTA } from "@/lib/pr/scoring";
 import { perfilVigente, type Perfil } from "@/lib/pr/perfil";
 import { bloqueDeConsulta } from "@/lib/pr/boletin";
+import { avisarConsultasBuenas } from "@/lib/pr/aviso";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -149,7 +150,7 @@ export async function POST(request: Request) {
   // reintento le volvía a pagar a Claude. Ahora la repetida se salta.
   const { data, error } = await sb.from("pr_queries")
     .upsert(filas, { onConflict: "email_hash", ignoreDuplicates: true })
-    .select("id,score");
+    .select("id,score,plataforma,medio,titulo,asunto,deadline");
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
@@ -160,9 +161,20 @@ export async function POST(request: Request) {
             .then(() => {}, () => {});
   }
 
+  // Aviso al teléfono sólo por las consultas que ENTRARON ahora (las repetidas
+  // no vuelven en `data`), y sólo por las buenas. Si el aviso falla, la
+  // consulta ya está guardada: se anota en el log y sigue.
+  let avisos: string[] = [];
+  try {
+    avisos = await avisarConsultasBuenas(data);
+  } catch (e) {
+    console.error("Aviso no enviado:", e);
+  }
+
   return NextResponse.json({
     ok: true,
     consultas: data.length,
+    avisos,
     scores: data.map((d) => d.score),
     relevantes: data.filter((d) => (d.score ?? 0) >= 70).length,
   });
