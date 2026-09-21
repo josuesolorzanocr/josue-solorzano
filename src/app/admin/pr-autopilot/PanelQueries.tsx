@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import type { PrQuery } from "@/lib/pr/supabase";
 import { esCorreo, type Vencimiento } from "@/lib/pr/fechas";
 import type { UsoCupo } from "@/lib/pr/cupos";
+import { consultaCortada } from "@/lib/pr/boletin";
 
 function colorScore(s: number | null) {
   if (s === null) return "bg-neutral-700 text-neutral-200";
@@ -313,6 +314,23 @@ export default function PanelQueries({
                   })()}
                 </div>
 
+                {consultaCortada(q.consulta_original) && (
+                  <div className="rounded-lg border border-amber-700 bg-amber-950/30 p-3 text-sm text-amber-200">
+                    <p className="font-medium">La consulta llegó cortada en el correo.</p>
+                    <p className="mt-1">
+                      {q.plataforma} manda sólo el principio: el periodista puede estar pidiendo
+                      cosas que no se ven aquí.{" "}
+                      {q.responder_a?.startsWith("http") ? (
+                        <a href={q.responder_a} target="_blank" rel="noopener noreferrer" className="underline">
+                          Ábrala en {q.plataforma}
+                        </a>
+                      ) : (
+                        `Ábrala en ${q.plataforma}`
+                      )}{" "}
+                      y léala completa antes de contestar.
+                    </p>
+                  </div>
+                )}
                 {q.consulta_original && (
                   <details className="rounded-lg border border-neutral-800 p-3 text-sm">
                     <summary className="cursor-pointer text-neutral-300">Ver la consulta original, tal como la escribió el periodista</summary>
