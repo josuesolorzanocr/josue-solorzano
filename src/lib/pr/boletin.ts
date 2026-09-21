@@ -43,3 +43,21 @@ export function bloqueDeConsulta(boletin: string, titulo: string): string | null
   const bloque = boletin.slice(desde, fin).trim();
   return bloque.length >= 40 ? enlacesSeguros(bloque).slice(0, 6000) : null;
 }
+
+/**
+ * ¿La consulta viene cortada en el correo?
+ *
+ * Qwoted manda sólo el principio y corta a media frase ("...If an employee is
+ * to be judged by..."), para obligar a entrar a la plataforma. El 2026-09-21 se
+ * escribió una respuesta sin saber que el periodista hacía dos preguntas más.
+ * Verificado contra el correo original: no se perdió nada en el camino, nunca
+ * llegó completo.
+ */
+export function consultaCortada(texto: string | null): boolean {
+  const t = (texto || "").trim();
+  if (!t) return false;
+  // El corte se reconoce por los puntos suspensivos al final del párrafo de la
+  // consulta, antes de la fecha límite o del enlace para responder.
+  const antesDeLaFecha = t.split(/\n\s*(?:Submit By:|Deadline:|RESPOND TO THIS REPORTER)/i)[0];
+  return /(\.\.\.|…)\s*$/.test(antesDeLaFecha.trim());
+}
