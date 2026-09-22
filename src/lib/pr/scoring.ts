@@ -105,7 +105,7 @@ IMPORTANTE: estos correos suelen ser BOLETINES con VARIAS consultas de
 periodistas, agrupadas por tema. Tu primer trabajo es SEPARARLAS.
 
 ---
-${input.cuerpo.slice(0, 20000)}
+${input.cuerpo.slice(0, 120000)}
 ---
 
 PASO 1 — Extraé cada consulta individual.
@@ -135,6 +135,10 @@ PASO 2 — Para CADA consulta, por separado:
    - sin_ia: true si la consulta dice que NO acepta respuestas escritas con IA
      ("No AI Pitches Considered", "can't accept AI-written responses",
      "NO AI responses" y parecidos). Si no lo dice, false.
+     PRECAUCIÓN: si de esta consulta sólo ves el título en el índice y NO ves su
+     ficha completa (con Email:, Deadline: y el texto de la consulta), poné
+     sin_ia en true y decilo en el motivo: sin la letra menuda no se sabe si
+     prohíbe IA, y equivocarse ahí cuesta la cuenta.
    - idioma: "en" o "es", el idioma en que ESCRIBIÓ EL PERIODISTA la consulta
      (no el de estas instrucciones).
 

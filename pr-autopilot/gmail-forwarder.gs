@@ -135,7 +135,11 @@ function revisarCorreos_() {
       var carga = {
         plataforma: plataformaDe_(msg.getFrom()),
         asunto: msg.getSubject(),
-        cuerpo: msg.getPlainBody().slice(0, 20000),
+        // 120.000 y no 20.000: un boletín de HARO con 23 consultas pasa los 20.000 y
+        // las últimas llegaban SIN su ficha — sin correo, sin fecha límite y sin el
+        // aviso de "No AI Pitches Considered" (visto el 2026-09-21, consulta 23 de
+        // Nonfiction Authors Association). Se perdía justo la letra menuda.
+        cuerpo: msg.getPlainBody().slice(0, 120000),
         periodista: msg.getFrom(),
         user_id: CONFIG.USER_ID || null
       };
