@@ -4,7 +4,7 @@ import { prSupabase } from "@/lib/pr/supabase";
 import { evaluarCorreo, DONDE_SE_CONTESTA } from "@/lib/pr/scoring";
 import { perfilVigente, type Perfil } from "@/lib/pr/perfil";
 import { bloqueDeConsulta } from "@/lib/pr/boletin";
-import { avisarConsultasBuenas } from "@/lib/pr/aviso";
+import { avisarConsultasBuenas, avisarFallo } from "@/lib/pr/aviso";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -96,6 +96,17 @@ export async function POST(request: Request) {
       email_hash: huellaCorreo, correo_hash: huellaCorreo,
     }).select("id").single();
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+    // Avisar al teléfono, pero una vez por hora: si falla la API, fallan TODOS
+    // los correos seguidos y 34 mensajes no ayudan a nadie.
+    const haceUnaHora = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+    const { count: fallosRecientes } = await sb.from("pr_queries")
+      .select("id", { count: "exact", head: true })
+      .like("score_motivo", "scoring falló%")
+      .gte("creado_en", haceUnaHora);
+    await avisarFallo(e instanceof Error ? e.message : String(e), (fallosRecientes ?? 0) > 1)
+      .catch((err) => console.error("Aviso de fallo no enviado:", err));
+
     return NextResponse.json({ ok: true, id: data.id, scoring: "falló", revisar_a_mano: true });
   }
 

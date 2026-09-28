@@ -81,3 +81,22 @@ export async function avisarConsultasBuenas(filas: ConsultaParaAvisar[]): Promis
   ]);
   return resultados.filter((r): r is string => r !== null);
 }
+
+/**
+ * Aviso cuando la calificación FALLA. Sin esto, el sistema sigue guardando
+ * correos sin calificar y nadie se entera: del 2026-09-22 al 2026-09-28 se
+ * quedaron 34 correos sin calificar porque se acabó el saldo de la API, y se
+ * perdieron consultas de 92 y 75 por vencimiento.
+ *
+ * `yaAvisado` evita 34 mensajes seguidos: con uno por hora basta para enterarse.
+ */
+export async function avisarFallo(motivo: string, yaAvisado: boolean): Promise<string[]> {
+  if (yaAvisado) return [];
+  const texto = `⚠️ El PR Auto-Pilot NO está calificando las consultas.\n\n${motivo.slice(0, 500)}\n\n`
+    + `Los correos se están guardando sin calificar; no se pierde nada, pero nadie los está leyendo.\n${PANEL}`;
+  const resultados = await Promise.all([
+    porTelegram(texto).catch((e) => `telegram falló (${e instanceof Error ? e.message : String(e)})`),
+    porWhatsapp(texto).catch((e) => `whatsapp falló (${e instanceof Error ? e.message : String(e)})`),
+  ]);
+  return resultados.filter((r): r is string => r !== null);
+}
